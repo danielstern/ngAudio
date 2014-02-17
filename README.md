@@ -9,3 +9,14 @@ ngAudio is a directive which makes any element you click play a sound. It is des
 
 Usage
 -----
+	
+<code>
+	<script src='lib/angular.js'></script>
+	<script src='lib/angular.audio.js'></script>
+
+	<audio id='click1'>
+	  <source src="audio/click.mp3" type="audio/mp3">
+	</audio>
+
+	<button ng-audio='click1'>Click me and a sound will play</button>
+</code>
