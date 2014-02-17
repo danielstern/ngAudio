@@ -19,4 +19,13 @@ Usage
 </audio>
 
 <button ng-audio='click1'>Click me and a sound will play</button>
+
+//No JavaScript required
 ```
+
+Is it Really That Easy?
+-----
+It's really that easy.
+
+Tested in:
+Chrome
