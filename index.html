@@ -27,7 +27,7 @@
       <header>
         <span class="ribbon-outer">
           <span class="ribbon-inner">
-            <h1>Ngaudio</h1>
+            <h1>ngAudio</h1>
             <h2>Angular Directive for Playing Sounds</h2>
           </span>
           <span class="left-tail"></span>
@@ -49,25 +49,45 @@
         <h1>
 <a name="ng-audio" class="anchor" href="#ng-audio"><span class="octicon octicon-link"></span></a>NG-AUDIO</h1>
 
-<p>Play your sounds with an angular directive.</p>
-
-<h2>
-<a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>Description</h2>
+<h1>Play your sounds with an angular directive.</h1>
 
 <p>ngAudio is a directive which makes any element you click play a sound. It is designed to be convenient and simple, as opposed to customizable and powerful. Please add and pull request your own features if you'd like them added.</p>
 
-<h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<h3>Example 1</h3>
+<pre>
+  <br/>&lt;script src='javascripts/angular.js'&gt;&lt;/script&gt;<br/>&lt;script src='javascripts/angular.audio.js'&gt;&lt;/script&gt;<br/><br/>&lt;div ng-app=&quot;audioExample&quot;&gt;<br/><br/>&lt;audio id='click1'&gt;<br/>  &lt;source src=&quot;audio/click.mp3&quot; type=&quot;audio/mp3&quot;&gt;<br/>&lt;/audio&gt;<br/><br/>&lt;button ng-audio='click1'&gt;<br/>Click me and a sound will play<br/>&lt;/button&gt;<br/>&lt;/div&gt;<br/><br/>&lt;script&gt;<br/>  angular.module('audioExample',['ngAudio']);<br/>&lt;/script&gt;
+</pre>
 
-<div class="highlight highlight-html"><pre><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'lib/angular.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'lib/angular.audio.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+<script src='javascripts/angular.js'></script>
+<script src='javascripts/angular.audio.js'></script>
 
-<span class="nt">&lt;audio</span> <span class="na">id=</span><span class="s">'click1'</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">"audio/click.mp3"</span> <span class="na">type=</span><span class="s">"audio/mp3"</span><span class="nt">&gt;</span>
-<span class="nt">&lt;/audio&gt;</span>
+<div ng-app="audioExample">
 
-<span class="nt">&lt;button</span> <span class="na">ng-audio=</span><span class="s">'click1'</span><span class="nt">&gt;</span>Click me and a sound will play<span class="nt">&lt;/button&gt;</span>
-</pre></div>
+<audio id='click1'>
+  <source src="audio/click.mp3" type="audio/mp3">
+</audio>
+
+<button ng-audio='click1'>Click me and a sound will play</button>
+</div>
+
+<script>
+  angular.module('audioExample',['ngAudio']);
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-40501021-12', 'danielstern.github.io');
+  ga('send', 'pageview');
+
+</script>
+
+<!-- OH SNAP -->
+
+
       </section>
 
       <footer>
