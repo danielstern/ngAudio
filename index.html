@@ -39,6 +39,18 @@
 			<button ng-audio='click2'>A</button>
 			<button ng-audio='audio/exit.mp3'>B</button>
 		</div>
+		<h2>Specifying a music track</h2>
+		<div>
+			<button ng-audio='audio/song1.mp3'>I play a song</button>
+			<button ng-audio='audio/song2.mp3'>
+				And I play another song, but we don't play at the same time!
+			</button>
+			<div>
+			<button ng-click="toggleMute(['audio/song1.mp3','audio/song2.mp3'])">
+				And I mute all songs!
+			</button>
+		</div>
+		</div>
 	</div>
 	</body>
 </html>
@@ -48,10 +60,11 @@ angular.module('audioDemo',['ngAudio'])
 .controller('audioDemo',function($scope,ngAudio){
 	$scope.muting = false;
 	$scope.toggleMuteAll = function() {
-		console.log("muting all");
 		ngAudio.toggleMuteAll();
 		$scope.muting = !$scope.muting;
-	}
+	};
+
+	ngAudio.isMusic(['audio/song1.mp3','audio/song2.mp3'])
 
 	$scope.toggleMute = function(str) {
 		ngAudio.toggleMute(str);
