@@ -44,12 +44,17 @@ angular.module('ngAudio', [])
 
     var audObj = new AudioObject();
 
+    if (soundLoaded(str)){
+    	r.resolve(this.getAudio(str));
+    	return r.promise;
+    };
+
     var $sound = document.getElementById(str);
     if ($sound) {
       audObj.sound = $sound;
       audObj.src = $sound.getAttribute('src');
       audObj.selector = str;
-      if (!soundLoaded(audObj)) allSoundsLoaded.push(audObj);
+      if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
       r.resolve(audObj);
 
     } else {
@@ -58,7 +63,7 @@ angular.module('ngAudio', [])
         .then(function(res) {
           audObj.sound = res;
           audObj.src = str;
-          if (!soundLoaded(audObj)) allSoundsLoaded.push(audObj);
+          if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
           r.resolve(audObj);
         });
     }
@@ -68,6 +73,7 @@ angular.module('ngAudio', [])
   };
 
   function soundLoaded(id) {
+  	console.log("Is sound loaded?",id,allSoundsLoaded);
   	return _.find(allSoundsLoaded,function(audObj){
   		if (audObj.src == id) return true;
   		if (audObj.selector == id) return true;
@@ -119,12 +125,27 @@ angular.module('ngAudio', [])
     this.mute = function() {
     	oldVolume = this.sound.volume;
     	this.sound.volume = 0;
+    };
+
+    this.play = function() {
+    	this.stop();
+    	this.sound.play();
     }
 
     this.unmute = function() {
     	this.sound.volume = oldVolume;
 
     }
+
+    this.stop = function() {
+    	this.pause();
+    	this.sound.currentTime = 0;
+    };
+
+    this.pause = function() {
+    	this.sound.pause();
+    }
+
   }
 
 
@@ -148,7 +169,7 @@ angular.module('ngAudio', [])
 
     var $sound = ngAudioLoader.loadAudio(id)
       .then(function(audObj) {
-        audObj.sound.play();
+        audObj.play();
       })
   }
 
@@ -166,9 +187,8 @@ angular.module('ngAudio', [])
       ids = [ids];
     }
     _.each(ids, function(id) {
-      //mutedSounds.push(id);
-     // soundVolumes[id] = a.getSoundVolume(id);
-     // a.setSoundVolume(id, 0);
+    	var audObj = getAudio(id);
+    	audObj.mute();
     })
   };
 
@@ -182,13 +202,9 @@ angular.module('ngAudio', [])
   }
 
   this.stopAll = function() {
-    //_.each(loadedAudio, function(aud) {
-    //  aud.stop();
-   // });
-
-    //_.each(domAudio, function(id) {
-    //  a.stop(id);
-    //});
+    _.each(l.getAllSounds(),function(audObj){
+    	audObj.stop();
+    })
   }
 
   this.toggleMuteAll = function() {
