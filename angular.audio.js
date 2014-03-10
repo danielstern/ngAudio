@@ -10,20 +10,18 @@ angular.module('ngAudio', [])
     controller: function($scope, $attrs, $element) {
 
       if ($element[0].nodeName == 'AUDIO') {
-        console.log("this is an audio element");
         return;
       }
 
       if ($element[0].nodeName == 'NG-AUDIO') {
-        console.log("this is an ngAudio audio element", $attrs);
+
         var audio = angular.element(document.createElement('audio'));
         audio.attr('ng-audio');
 
-        $element.attr('id','');
+        $element.attr('id', '');
         for (attr in $attrs.$attr) {
-        	var attrName = attr;
-        	console.log("Attr name?", attrName);
-        	audio.attr(attrName,$attrs[attrName]);
+          var attrName = attr;
+          audio.attr(attrName, $attrs[attrName]);
         }
 
         var el = $compile(audio)($scope);
@@ -34,65 +32,101 @@ angular.module('ngAudio', [])
       /* Add a click listner to the element the directive is on. */
       $element.on('click', function() {
 
+
+        ngAudio.play($attrs.ngAudio);
+        return;
+
         /* Find the sound tag embedded in the markup. */
         var $sound = document.getElementById($attrs.ngAudio);
 
-        console.log("Sound finding?",$sound);
-
         /* Play the sound. */
         if ($sound) {
-        	$sound.play();
-        	return;
-      	}
+          $sound.play();
+          return;
+        }
 
-      	/* try to load the sound if there's no tag defeined */
-      	loadAudio($attrs.ngAudio)
-      	.then(
-      		function(res){res.play()},
-      		function(err){console.log("ERROR!")
-      	})
-      	function loadAudio(uri)
-				{
-						var r = $q.defer();
-				    var audio = new Audio();
-				
-				    audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
-				    audio.src = $attrs.ngAudio;
+        /* If there is no sound, try to load it externally.*/
+        loadAudio($attrs.ngAudio)
+          .then(
+            function(res) {
+              res.play()
+            },
+            function(err) {
+              console.log("ERROR: Could not load sound");
+            })
 
-				    function soundCanPlay() {
-				    	r.resolve(audio);
-				    }
-				    return r.promise;
-				}
+        function loadAudio(uri) {
+          var r = $q.defer();
+          var audio = new Audio();
+
+          audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
+          audio.src = $attrs.ngAudio;
+
+          function soundCanPlay() {
+            r.resolve(audio);
+          }
+          return r.promise;
+        }
       })
     },
   }
 })
 
 /* Service for use inside code */
-.service('ngAudio', function() {
-  var a = this;
-  var mutedSounds = [];
-  var soundVolumes = {};
-  var songs = [];
+.service('ngAudio', function($q) {
+    var a = this;
+    var mutedSounds = [];
+    var soundVolumes = {};
+    var songs = [];
 
-  this.play = function(id) {
-    var $sound = document.getElementById(id);
+    function contains(obj, target) {
+    if (obj == null) return false;
+    return any(obj, function(value) {
+      return value === target;
+    });
+  }
 
-    if (_.contains(songs, id)) {
-      a.stop(songs);
-    };
+    this.play = function(id) {
+      var $sound = document.getElementById(id);
 
-    /* Play the sound. */
-    try {
-      $sound.pause();
-      $sound.currentTime = 0;
-      $sound.play();
-    } catch (e) {
-      console.warn('Tried accessing unavailable sound', id);
-    }
+      if (songs.indexOf(id) > -1) {
+        a.stop(songs);
+      };
 
-  };
+      /* Play the sound. */
+      if ($sound) {
+        $sound.pause();
+        $sound.currentTime = 0;
+        $sound.play();
+        return;
+      }
+
+      /* If there is no sound, try to load it externally.*/
+      loadAudio(id)
+        .then(
+          function(res) {
+            res.play()
+          },
+          function(err) {
+            console.log("ERROR: Could not load sound");
+          })
+
+      function loadAudio(uri) {
+        var r = $q.defer();
+        var audio = new Audio();
+
+        audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
+        audio.src = id;
+
+        function soundCanPlay() {
+          r.resolve(audio);
+        }
+        return r.promise;
+      }
+
+
+
+  }
 
   this.isMusic = function(ids) {
     if (!_.isArray(ids)) {
@@ -166,3 +200,22 @@ angular.module('ngAudio', [])
 
 
 })
+
+var breaker = {};
+
+var _ = {};
+
+_.each = function(obj, iterator, context) {
+    if (obj == null) return obj;
+   	if (obj.length === +obj.length) {
+      for (var i = 0, length = obj.length; i < length; i++) {
+        if (iterator.call(context, obj[i], i, obj) === breaker) return;
+      }
+    } else {
+      var keys = _.keys(obj);
+      for (var i = 0, length = keys.length; i < length; i++) {
+        if (iterator.call(context, obj[keys[i]], keys[i], obj) === breaker) return;
+      }
+    }
+    return obj;
+  };
