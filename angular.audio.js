@@ -46,13 +46,23 @@ angular.module('ngAudio', [])
       	}
 
       	/* try to load the sound if there's no tag defeined */
-      	function loadAudio(uri,callback)
+      	loadAudio($attrs.ngAudio)
+      	.then(
+      		function(res){res.play()},
+      		function(err){console.log("ERROR!")
+      	})
+      	function loadAudio(uri)
 				{
+						var r = $q.defer();
 				    var audio = new Audio();
-				    //audio.onload = isAppLoaded; // It doesn't works!
-				    audio.addEventListener('canplaythrough', isAppLoaded, false); // It works!!
+				
+				    audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
 				    audio.src = $attrs.ngAudio;
-				    return audio;
+
+				    function soundCanPlay() {
+				    	r.resolve(audio);
+				    }
+				    return r.promise;
 				}
       })
     },
