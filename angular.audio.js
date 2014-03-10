@@ -44,7 +44,6 @@ angular.module('ngAudio', [])
     return allSoundsLoaded;
   }
   this.loadAudio = function(str, audObj) {
-    console.log("Loading",str);
     var r = $q.defer();
 
     if (soundLoaded(str)) return;
@@ -115,6 +114,7 @@ angular.module('ngAudio', [])
     var song = false;
     var o = this;
     var muting = false;
+    var deferredPlay = false;
 
     this.getVolume = function() {
       return this.sound.volume;
@@ -125,41 +125,14 @@ angular.module('ngAudio', [])
     };
 
     this.toggleMute = function() {
-      console.log("Muting sound", this);
       (muting) ? this.unmute() : this.mute();
     }
 
     this.mute = function() {
-    	muting = true;
+      muting = true;
       oldVolume = this.sound.volume;
       this.sound.volume = 0;
     };
-
-    var deferredPlay = false;
-
-    this.play = function(_sound) {
-    	console.log("Playing",_sound);
-      var sound = _sound || this.sound;
-    	if (!sound) {
-    		console.log("Deferring play");
-    		deferredPlay = true;
-     		return;
-    	}
-
-      if (muting) return;
-
-    	deferredPlay = false;
-
-      this.stop();
-      sound.play();
-
-      if (song) {
-      	console.log("I'm playing, and i'm a song!");
-      }
-    };
-
-    var i;
-
     
     this.unmute = function() {
     	if (!this.sound) return;
@@ -167,20 +140,29 @@ angular.module('ngAudio', [])
       this.sound.volume = oldVolume || 1;
     }
 
-    this.setSound = function(_sound) {
-  
-    	o.sound = _sound;
-      o.handleDeffered(_sound);
 
-    }
-
-    this.handleDeffered = function(_sound) {
-      console.log("Handling deferreds",o.sound, deferredPlay);
-      if (deferredPlay) {
-        console.log("Playing time");
-        this.play(_sound);
+    this.play = function(_sound) {
+      console.log("Playing",_sound);
+      var sound = _sound || this.sound;
+      if (!sound) {
+        console.log("Deferring play");
+        deferredPlay = true;
+        return;
       }
-    }
+
+      if (muting) return;
+
+      deferredPlay = false;
+
+      this.stop();
+      sound.play();
+
+      if (song) {
+        console.log("I'm playing, and i'm a song!");
+      }
+    };
+
+    var i;
 
     this.stop = function() {
     	if (!this.sound) return;
@@ -192,6 +174,20 @@ angular.module('ngAudio', [])
     	if (!this.sound) return;
       this.sound.pause();
     }
+
+    this.setSound = function(_sound) {
+  
+      o.sound = _sound;
+      o.handleDeffered(_sound);
+
+    }
+
+    this.handleDeffered = function(_sound) {
+      if (deferredPlay) {
+        this.play(_sound);
+      }
+    }
+
 
     this.enableSong = function() {
     	console.log("Enabling song");
