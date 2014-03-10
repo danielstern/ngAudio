@@ -4,7 +4,7 @@ License: PLEASE USE FOR EVIL*/
 
 angular.module('ngAudio', [])
 /* Directive for creating a special audio element */
-.directive('ngAudio', function($compile, ngAudio) {
+.directive('ngAudio', function($compile, ngAudio, $q) {
   return {
     restrict: 'AE',
     controller: function($scope, $attrs, $element) {
@@ -18,11 +18,6 @@ angular.module('ngAudio', [])
         console.log("this is an ngAudio audio element", $attrs);
         var audio = angular.element(document.createElement('audio'));
         audio.attr('ng-audio');
-      /*  for (var i = 0; i < $attrs.$attr.length; i++ ) {
-        	var attrName = $attrs.$attr[i];
-        	console.log("Attr name?", attrName);
-        }
-        */
 
         $element.attr('id','');
         for (attr in $attrs.$attr) {
@@ -42,8 +37,23 @@ angular.module('ngAudio', [])
         /* Find the sound tag embedded in the markup. */
         var $sound = document.getElementById($attrs.ngAudio);
 
+        console.log("Sound finding?",$sound);
+
         /* Play the sound. */
-        $sound.play();
+        if ($sound) {
+        	$sound.play();
+        	return;
+      	}
+
+      	/* try to load the sound if there's no tag defeined */
+      	function loadAudio(uri,callback)
+				{
+				    var audio = new Audio();
+				    //audio.onload = isAppLoaded; // It doesn't works!
+				    audio.addEventListener('canplaythrough', isAppLoaded, false); // It works!!
+				    audio.src = $attrs.ngAudio;
+				    return audio;
+				}
       })
     },
   }
