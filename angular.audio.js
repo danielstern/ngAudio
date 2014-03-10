@@ -47,7 +47,9 @@ angular.module('ngAudio', [])
     var $sound = document.getElementById(str);
     if ($sound) {
       audObj.sound = $sound;
-      allSoundsLoaded.push(audObj);
+      audObj.src = $sound.getAttribute('src');
+      audObj.selector = str;
+      if (!soundLoaded(audObj)) allSoundsLoaded.push(audObj);
       r.resolve(audObj);
 
     } else {
@@ -55,7 +57,8 @@ angular.module('ngAudio', [])
       _load(str)
         .then(function(res) {
           audObj.sound = res;
-          allSoundsLoaded.push(audObj);
+          audObj.src = str;
+          if (!soundLoaded(audObj)) allSoundsLoaded.push(audObj);
           r.resolve(audObj);
         });
     }
@@ -64,8 +67,18 @@ angular.module('ngAudio', [])
 
   };
 
+  function soundLoaded(id) {
+  	return _.find(allSoundsLoaded,function(audObj){
+  		if (audObj.src == id) return true;
+  		if (audObj.selector == id) return true;
+  	});
+  }
+
   this.getAudio = function(id) {
-  	var audObj = new AudioObject();
+  	allSoundsLoaded = _.uniq(allSoundsLoaded);
+  	var matchingSound = soundLoaded(id);
+
+  	var audObj = matchingSound || new AudioObject();
   	console.log("Getting audio for",id,allSoundsLoaded	);
   	return audObj;
 
@@ -98,6 +111,11 @@ angular.module('ngAudio', [])
     	this.sound.volume = vol;
     };
 
+    this.toggleMute = function() {
+    	console.log("Muting sound", this);
+    	 (this.sound.volume > 0) ? this.mute() : this.unmute();
+    }
+
     this.mute = function() {
     	oldVolume = this.sound.volume;
     	this.sound.volume = 0;
@@ -115,22 +133,18 @@ angular.module('ngAudio', [])
 /* Service for use inside code */
 .service('ngAudio', function($q, ngAudioLoader) {
   var a = this,
-    mutedSounds = [],
-    soundVolumes = {},
-    songs = [],
-    loadedAudio = [],
-    domAudio = [],
+    
     muting = false,
     l = ngAudioLoader;
 
 
   this.play = function(id) {
     if (muting) return;
-    if (mutedSounds.indexOf(id) > -1) return;
+    //if (_.contains(mutedSounds,id)) return;
 
-    if (songs.indexOf(id) > -1) {
-      a.stop(songs);
-    };
+    //if (songs.indexOf(id) > -1) {
+     // a.stop(songs);
+    //};
 
     var $sound = ngAudioLoader.loadAudio(id)
       .then(function(audObj) {
@@ -143,7 +157,7 @@ angular.module('ngAudio', [])
       ids = [ids];
     }
     _.each(ids, function(id) {
-      songs.push(id);
+    //  songs.push(id);
     })
   }
 
@@ -152,9 +166,9 @@ angular.module('ngAudio', [])
       ids = [ids];
     }
     _.each(ids, function(id) {
-      mutedSounds.push(id);
-      soundVolumes[id] = a.getSoundVolume(id);
-      a.setSoundVolume(id, 0);
+      //mutedSounds.push(id);
+     // soundVolumes[id] = a.getSoundVolume(id);
+     // a.setSoundVolume(id, 0);
     })
   };
 
@@ -168,13 +182,13 @@ angular.module('ngAudio', [])
   }
 
   this.stopAll = function() {
-    _.each(loadedAudio, function(aud) {
-      aud.stop();
-    });
+    //_.each(loadedAudio, function(aud) {
+    //  aud.stop();
+   // });
 
-    _.each(domAudio, function(id) {
-      a.stop(id);
-    });
+    //_.each(domAudio, function(id) {
+    //  a.stop(id);
+    //});
   }
 
   this.toggleMuteAll = function() {
@@ -188,11 +202,8 @@ angular.module('ngAudio', [])
     };
 
     _.each(ids, function(id) {
-      if (_.contains(mutedSounds, id)) {
-        a.unmute(id);
-      } else {
-        a.mute(id);
-      }
+	      var audObj = l.getAudio(id);
+	      audObj.toggleMute();
     });
   }
 
@@ -219,7 +230,7 @@ angular.module('ngAudio', [])
 
     _.each(ids, function(id) {
 
-      var $sound = document.getElementById(id);
+      var $sound = l.getAudio(id).sound;
 
       /* stop the sound. */
       try {
