@@ -67,6 +67,7 @@ angular.module('ngAudio', [])
   this.getAudio = function(id) {
   	var audObj = new AudioObject();
   	console.log("Getting audio for",id,allSoundsLoaded	);
+  	return audObj;
 
   }
 
@@ -86,6 +87,26 @@ angular.module('ngAudio', [])
   var AudioObject = function() {
     this.play = undefined;
     this.stop = undefined;
+    this.sound = {};
+    var oldVolume = 1;
+
+    this.getVolume = function() {
+    	return this.sound.volume;
+    };
+
+    this.setVolume = function(vol) {
+    	this.sound.volume = vol;
+    };
+
+    this.mute = function() {
+    	oldVolume = this.sound.volume;
+    	this.sound.volume = 0;
+    }
+
+    this.unmute = function() {
+    	this.sound.volume = oldVolume;
+
+    }
   }
 
 
@@ -182,13 +203,13 @@ angular.module('ngAudio', [])
 
 
   this.getSoundVolume = function(id) {
-    var $sound = document.getElementById(id);
-    return $sound.volume;
+    var $sound = l.getAudio(id);
+    return $sound.getVolume();
   }
 
   this.setSoundVolume = function(id, vol) {
-    var $sound = document.getElementById(id);
-    $sound.volume = vol;
+    var $sound = l.getAudio(id);
+    $sound.setVolume(vol);
   }
 
   this.stop = function(ids) {
