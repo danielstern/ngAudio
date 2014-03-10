@@ -39,6 +39,10 @@ angular.module('ngAudio', [])
 
 .service('ngAudioLoader', function($q) {
 	var allSoundsLoaded = [];
+
+	this.getAllSounds = function() {
+		return allSoundsLoaded;
+	}
   this.loadAudio = function(str) {
     var r = $q.defer();
 
