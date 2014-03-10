@@ -47,10 +47,7 @@ angular.module('ngAudio', [])
     console.log("Loading",str);
     var r = $q.defer();
 
-    //var audObj = new AudioObject();
-
     if (soundLoaded(str)) return;
-    
 
     var $sound = document.getElementById(str);
     if ($sound) {
@@ -59,7 +56,7 @@ angular.module('ngAudio', [])
       audObj.selector = str;
       if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
       r.resolve(audObj);
-      //audObj.loaded();
+      
 
     } else {
 
@@ -69,7 +66,6 @@ angular.module('ngAudio', [])
           audObj.src = str;
           if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
           r.resolve(audObj);
-      //    audObj.loaded();
         });
     }
 
@@ -78,7 +74,6 @@ angular.module('ngAudio', [])
   };
 
   function soundLoaded(id) {
-   //  console.log("Is sound loaded?", id, allSoundsLoaded);
     return _.find(allSoundsLoaded, function(audObj) {
       if (audObj.src == id) return true;
       if (audObj.selector == id) return true;
@@ -86,7 +81,6 @@ angular.module('ngAudio', [])
   }
 
   this.getAudio = function(id) {
-  //  allSoundsLoaded = _.uniq(allSoundsLoaded);
     var matchingSound = soundLoaded(id);
 
     var audObj = matchingSound || new AudioObject();
@@ -94,10 +88,8 @@ angular.module('ngAudio', [])
     if (!matchingSound) {
     	audObj.src = id;
     	audObj.selector = id;
-      //allSoundsLoaded.push(audObj);
     }
     this.loadAudio(id, audObj);
-    // console.log("Getting audio for", id, allSoundsLoaded);
     return audObj;
 
   }
@@ -161,11 +153,9 @@ angular.module('ngAudio', [])
       this.stop();
       sound.play();
 
-      //console.log("Playing",song);
-
-//      if (song) {
-  //    	console.log("I'm playing, and i'm a song!");
-  //    }
+      if (song) {
+      	console.log("I'm playing, and i'm a song!");
+      }
     };
 
     var i;
@@ -178,11 +168,10 @@ angular.module('ngAudio', [])
     }
 
     this.setSound = function(_sound) {
-      //setTimeout(function(){
-    	//console.log("Sound set",_sound);
+  
     	o.sound = _sound;
       o.handleDeffered(_sound);
-      //},150);
+
     }
 
     this.handleDeffered = function(_sound) {
@@ -208,6 +197,10 @@ angular.module('ngAudio', [])
     	console.log("Enabling song");
     	song = true;
     };
+
+    this.isSong - function() {
+      return song;
+    }
 
   }
 
