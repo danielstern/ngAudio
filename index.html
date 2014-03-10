@@ -2,6 +2,7 @@
 <html ng-app='audioDemo'>
 	<head>
 		<title>Angular Audio Demo</title>
+		<script src='lib/underscore.js'></script>
 		<script src='lib/angular.js'></script>
 		<script src='angular.audio.js'></script>
 	</head>
@@ -32,7 +33,7 @@
 	</div>
 	<div>
 		<button ng-click='toggleMuteAll()'>I mute everything</button>
-		<button>I mute just button B's sound</button>
+		<button ng-click="toggleMute('audio/exit.mp3')">I mute just button B's sound</button>
 	</div>
 		<div>
 			<button ng-audio='click2'>A</button>
@@ -50,6 +51,10 @@ angular.module('audioDemo',['ngAudio'])
 		console.log("muting all");
 		ngAudio.toggleMuteAll();
 		$scope.muting = !$scope.muting;
+	}
+
+	$scope.toggleMute = function(str) {
+		ngAudio.toggleMute(str);
 	}
 
 });

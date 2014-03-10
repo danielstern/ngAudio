@@ -37,69 +37,84 @@ angular.module('ngAudio', [])
   }
 })
 
+.service('ngAudioLoader', function($q) {
+	var allSoundsLoaded = [];
+  this.loadAudio = function(str) {
+    var r = $q.defer();
+
+    var audObj = new AudioObject();
+
+    var $sound = document.getElementById(str);
+    if ($sound) {
+      audObj.sound = $sound;
+      allSoundsLoaded.push(audObj);
+      r.resolve(audObj);
+
+    } else {
+
+      _load(str)
+        .then(function(res) {
+          audObj.sound = res;
+          allSoundsLoaded.push(audObj);
+          r.resolve(audObj);
+        });
+    }
+
+    return r.promise;
+
+  };
+
+  this.getAudio = function(id) {
+  	var audObj = new AudioObject();
+  	console.log("Getting audio for",id,allSoundsLoaded	);
+
+  }
+
+  function _load(uri) {
+    var k = $q.defer();
+    var audio = new Audio();
+
+    audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
+    audio.src = uri;
+
+    function soundCanPlay() {
+      k.resolve(audio);
+    }
+    return k.promise;
+  }
+
+  var AudioObject = function() {
+    this.play = undefined;
+    this.stop = undefined;
+  }
+
+
+})
+
 /* Service for use inside code */
-.service('ngAudio', function($q) {
-  var a = this;
-  var mutedSounds = [];
-  var soundVolumes = {};
-  var songs = [];
+.service('ngAudio', function($q, ngAudioLoader) {
+  var a = this,
+    mutedSounds = [],
+    soundVolumes = {},
+    songs = [],
+    loadedAudio = [],
+    domAudio = [],
+    muting = false,
+    l = ngAudioLoader;
 
-  var loadedAudio = [];
-  var domAudio = [];
-
-  function getAudio(str) {
-  	
-
-  }
-
-  function contains(obj, target) {
-    if (obj == null) return false;
-    return any(obj, function(value) {
-      return value === target;
-    });
-  }
 
   this.play = function(id) {
-    var $sound = document.getElementById(id);
-
     if (muting) return;
+    if (mutedSounds.indexOf(id) > -1) return;
 
     if (songs.indexOf(id) > -1) {
       a.stop(songs);
     };
 
-    /* Play the sound. */
-    if ($sound) {
-      $sound.pause();
-      $sound.currentTime = 0;
-      $sound.play();
-      domAudio.push(id);
-      return;
-    }
-
-    /* If there is no sound, try to load it externally.*/
-    loadAudio(id)
-      .then(
-        function(res) {
-          res.play();
-          loadedAudio[id] = res;
-        },
-        function(err) {
-          console.log("ERROR: Could not load sound");
-        })
-
-    function loadAudio(uri) {
-      var r = $q.defer();
-      var audio = new Audio();
-
-      audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
-      audio.src = id;
-
-      function soundCanPlay() {
-        r.resolve(audio);
-      }
-      return r.promise;
-    }
+    var $sound = ngAudioLoader.loadAudio(id)
+      .then(function(audObj) {
+        audObj.sound.play();
+      })
   }
 
   this.isMusic = function(ids) {
@@ -122,30 +137,28 @@ angular.module('ngAudio', [])
     })
   };
 
-  var muting = false;
-
   this.muteAll = function() {
-  	a.stopAll();
-  	muting = true;
+    a.stopAll();
+    muting = true;
   }
 
   this.unmuteAll = function() {
-  	muting = false;
+    muting = false;
   }
 
   this.stopAll = function() {
-  	_.each(loadedAudio,function(aud){
-  			aud.stop();
-  	});
+    _.each(loadedAudio, function(aud) {
+      aud.stop();
+    });
 
-  	_.each(domAudio,function(id){
-  			a.stop(id);
-  	});
+    _.each(domAudio, function(id) {
+      a.stop(id);
+    });
   }
 
   this.toggleMuteAll = function() {
-  	console.log("Toggling mute",muting);
-  	muting ? a.unmuteAll() : a.muteAll();
+  //  console.log("Toggling mute", muting);
+    muting ? a.unmuteAll() : a.muteAll();
   }
 
   this.toggleMute = function(ids) {
@@ -198,26 +211,3 @@ angular.module('ngAudio', [])
 
   };
 })
-
-
-/** Some functions from underscore **/
-var breaker = {};
-var _ = _ || {};
-_.each = function(obj, iterator, context) {
-  if (obj == null) return obj;
-  if (obj.length === +obj.length) {
-    for (var i = 0, length = obj.length; i < length; i++) {
-      if (iterator.call(context, obj[i], i, obj) === breaker) return;
-    }
-  } else {
-    var keys = _.keys(obj);
-    for (var i = 0, length = keys.length; i < length; i++) {
-      if (iterator.call(context, obj[keys[i]], keys[i], obj) === breaker) return;
-    }
-  }
-  return obj;
-};
-
-_.isArray = function(obj) {
-	 return toString.call(obj) == '[object Array]';
-}
