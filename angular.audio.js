@@ -122,6 +122,7 @@ angular.module('ngAudio', [])
     var oldVolume = 1;
     var song = false;
     var o = this;
+    var muting = false;
 
     this.getVolume = function() {
       return this.sound.volume;
@@ -133,11 +134,11 @@ angular.module('ngAudio', [])
 
     this.toggleMute = function() {
       console.log("Muting sound", this);
-      (!this.sound || this.sound.volume == 0) ? this.unmute() : this.mute();
+      (muting) ? this.unmute() : this.mute();
     }
 
     this.mute = function() {
-    	if (!this.sound) return;
+    	muting = true;
       oldVolume = this.sound.volume;
       this.sound.volume = 0;
     };
@@ -152,6 +153,8 @@ angular.module('ngAudio', [])
     		deferredPlay = true;
      		return;
     	}
+
+      if (muting) return;
 
     	deferredPlay = false;
 
@@ -170,15 +173,16 @@ angular.module('ngAudio', [])
     
     this.unmute = function() {
     	if (!this.sound) return;
+      muting = false;
       this.sound.volume = oldVolume || 1;
     }
 
     this.setSound = function(_sound) {
-      setTimeout(function(){
-    	console.log("Sound set",_sound);
+      //setTimeout(function(){
+    	//console.log("Sound set",_sound);
     	o.sound = _sound;
       o.handleDeffered(_sound);
-      },150);
+      //},150);
     }
 
     this.handleDeffered = function(_sound) {
