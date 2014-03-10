@@ -1,9 +1,27 @@
 <doctype html5>
-<html>
+<html ng-app='audioDemo'>
 	<head>
 		<title>Angular Audio Demo</title>
+		<script src='lib/angular.js'></script>
+		<script src='angular.audio.js'></script>
 	</head>
-	<body>
+	<body ng-controller='audioDemo'>
+
+	<h1>Using the Directive to Play a Sound</h1>
+
+		<audio ng-audio id='click1'>
+		  <source src="audio/click.mp3" type="audio/mp3">
+		</audio>
+
+		<button ng-audio='click1'>Click me and a sound will play</button>
+		<button ng-audio='audio/click1.mp3'>I'll play a sound as well.</button>
 		Hi!
 	</body>
 </html>
+
+<script>
+angular.module('audioDemo',['ngAudio'])
+.controller('audioDemo',function(){
+
+});
+</script>

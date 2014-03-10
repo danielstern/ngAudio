@@ -8,9 +8,16 @@ angular.module('ngAudio',[])
   return {
     restrict: 'A',
     controller: function ($scope, $attrs, $element) {
+    	console.log("Found directive", $element);
+    	window.element = $element;
+    	//return;
+    	if ($element[0].nodeName == 'AUDIO') {
+    		console.log("this is an audio element");
+    		return;
+    	}
 
   	/* Add a click listner to the element the directive is on. */
-   	$element.click(function(){
+   	$element.on('click',function(){
    		
  		/* Find the sound tag embedded in the markup. */
  		var $sound = document.getElementById($attrs.ngAudio);

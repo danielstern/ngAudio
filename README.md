@@ -7,6 +7,18 @@ Description
 ---
 The ngAudio module comes with two handy components, a **directive** for playing sounds using the dom, and a **service** for handling sound inside your code.
 
+### Usage
+-----
+
+Simply include the angular.audio file to be able to require the ngAudio module in any of your own modules.
+
+```html
+<head>
+	<script src='lib/angular.js'></script>
+	<script src='lib/angular.audio.js'></script>
+</head>
+```
+
 ngAudio Directive
 -----
 The ngAudio directive can be added to the dom as an element or an attribute. It has different effects depending on how you use it.
@@ -38,7 +50,7 @@ Except it is now more powerful.
 You can also apply an ngAudio tag to an existing audio elements for the same great futures on a native dom element.
 
 ```html
-<audio ngAudio src='mysound.mp3' volume='0.7' startAt='3'>
+<audio ng-audio src='mysound.mp3' volume='0.7' startAt='3'>
 </audio>
 	<!-- You are good to go -->
 ```
@@ -51,34 +63,30 @@ You can also apply an ngAudio tag to an existing audio elements for the same gre
 You can add the `ngAudio` attribute to any normal dom element. In this case, clicking the element will play the sound identified by the ngAudio attribute.
 
 ```html
-<button ngAudio="mySound">
-</button>
-	<!--Clicking this will play a sound-->
+<button ng-audio="mySound"></button>
+<!--Clicking this will play a sound-->
 ```
 
 ngAudio will first look for an audio or ngAudio element with an id equal to the value passed. If there is no element, it will try to load a file as though the value is a url.
 
 ```html
-<button ngAudio="audio/mySound.wav">
-</button>
+<button ng-audio="audio/mySound.wav"></button>
 	<!--Clicking this will play a sound-->
 ```
 
 This is also OK.
-
-
-Usage
+### Directive Sample Usage
 -----
 
 ```html
-<script src='lib/angular.js'></script>
-<script src='lib/angular.audio.js'></script>
 
-<audio id='click1'>
+<audio ng-audio id='click1'>
   <source src="audio/click.mp3" type="audio/mp3">
 </audio>
 
 <button ng-audio='click1'>Click me and a sound will play</button>
+<button ng-audio='audio/click1.mp3'>I'll play a sound as well.</button>
+```
 
 //No JavaScript required
 ```
