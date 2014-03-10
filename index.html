@@ -7,7 +7,8 @@
 	</head>
 	<body ng-controller='audioDemo'>
 
-	<h1>Using the Directive to Play a Sound</h1>
+	<h1>Angular Audio</h1>
+	<h2>Using the Directive to Play a Sound</h2>
 
 		<audio ng-audio id='click1'>
 		  <source src="audio/click.mp3" type="audio/mp3">
@@ -15,17 +16,41 @@
 
 		<ng-audio id='click2' src='audio/click2.mp3'>
 		</ng-audio>
-
+		<div>
 		<button ng-audio='click1'>Click me and a sound will play</button>
+	</div>
+	<div>
 		<button ng-audio='click2'>Try clicking me for another audible surprise</button>
-		<button ng-audio='audio/exit.mp3'>I'll play a sound as well.</button>
-		Hi!
+	</div>
+	<div>
+		<button ng-audio='audio/exit.mp3'>I'll play a sound that's not embedded in the document.</button>
+	</div>
+
+	<h2>Controlling Sound with Code</h2>
+	<div ng-hide='!muting'>
+		MUTING!!
+	</div>
+	<div>
+		<button ng-click='toggleMuteAll()'>I mute everything</button>
+		<button>I mute just button B's sound</button>
+	</div>
+		<div>
+			<button ng-audio='click2'>A</button>
+			<button ng-audio='audio/exit.mp3'>B</button>
+		</div>
+	</div>
 	</body>
 </html>
 
 <script>
 angular.module('audioDemo',['ngAudio'])
-.controller('audioDemo',function(){
+.controller('audioDemo',function($scope,ngAudio){
+	$scope.muting = false;
+	$scope.toggleMuteAll = function() {
+		console.log("muting all");
+		ngAudio.toggleMuteAll();
+		$scope.muting = !$scope.muting;
+	}
 
 });
 </script>
