@@ -87,13 +87,3 @@ This is also OK.
 <button ng-audio='click1'>Click me and a sound will play</button>
 <button ng-audio='audio/click1.mp3'>I'll play a sound as well.</button>
 ```
-
-//No JavaScript required
-```
-
-Is it Really That Easy?
------
-It's really that easy.
-
-Tested in:
-Chrome
