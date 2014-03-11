@@ -193,6 +193,7 @@ angular.module('ngAudio', [])
     this.unmute = function() {
       muting = false;
       volume = oldVolume || 1;
+      if (this.isSong() && songmuting) return;
       this.setVolume(volume)
     }
 
