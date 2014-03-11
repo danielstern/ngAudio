@@ -5,11 +5,27 @@
 		<script src='lib/underscore.js'></script>
 		<script src='lib/angular.js'></script>
 		<script src='angular.audio.js'></script>
+
+		<link href="css/shCore.css" rel="stylesheet" type="text/css">
+		<link href="css/shThemeDefault.css" rel="stylesheet" type="text/css">
+		<script src="lib/syntax/shCore.js" type="text/javascript"></script>
+		<script src="lib/syntax/shAutoloader.js" type="text/javascript"></script>
+		<script src="lib/syntax/shBrushXml.js" type="text/javascript"></script>
+
 	</head>
 	<body ng-controller='audioDemo'>
 
 	<h1>Angular Audio</h1>
 	<h2>Using the Directive to Play a Sound</h2>
+	<pre class="brush: js; toolbar: false;">&lt;div&gt;Hello&lt;/div&gt;
+	&lt;audio ng-audio id='click1'&gt;
+	  &lt;source src=&quot;audio/click.mp3&quot; type=&quot;audio/mp3&quot;&gt;
+	&lt;/audio&gt;
+
+	&lt;ng-audio id='click2' src='audio/click2.mp3'&gt;
+	&lt;/ng-audio&gt;
+&lt;/code&gt;
+		</pre>
 
 		<audio ng-audio id='click1'>
 		  <source src="audio/click.mp3" type="audio/mp3">
@@ -73,6 +89,8 @@
 </html>
 
 <script>
+//hljs.initHighlightingOnLoad();
+
 angular.module('audioDemo',['ngAudio'])
 .controller('audioDemo',function($scope,ngAudio){
 	$scope.muting = false;
@@ -94,6 +112,47 @@ angular.module('audioDemo',['ngAudio'])
 	$scope.playSound = function(str) {
 		ngAudio.play(str);
 	}
+
+function path()
+{
+	var args = arguments,
+		result = []
+		;
+		
+	for(var i = 0; i < args.length; i++)
+		result.push(args[i].replace('@', 'lib/syntax/'));
+		
+	return result
+};
+//	SyntaxHighlighter.all();
+SyntaxHighlighter.autoloader.apply(null, path(
+	'applescript			@shBrushAppleScript.js',
+	'actionscript3 as3		@shBrushAS3.js',
+	'bash shell				@shBrushBash.js',
+	'coldfusion cf			@shBrushColdFusion.js',
+	'cpp c					@shBrushCpp.js',
+	'c# c-sharp csharp		@shBrushCSharp.js',
+	'css					@shBrushCss.js',
+	'delphi pascal			@shBrushDelphi.js',
+	'diff patch pas			@shBrushDiff.js',
+	'erl erlang				@shBrushErlang.js',
+	'groovy					@shBrushGroovy.js',
+	'java					@shBrushJava.js',
+	'jfx javafx				@shBrushJavaFX.js',
+	'js jscript javascript	@shBrushJScript.js',
+	'perl pl				@shBrushPerl.js',
+	'php					@shBrushPhp.js',
+	'text plain				@shBrushPlain.js',
+	'py python				@shBrushPython.js',
+	'powershell ps posh		@shBrushPowerShell.js',
+	'ruby rails ror rb		@shBrushRuby.js',
+	'sass scss				@shBrushSass.js',
+	'scala					@shBrushScala.js',
+	'sql					@shBrushSql.js',
+	'vb vbnet				@shBrushVb.js',
+	'xml xhtml xslt html	@shBrushXml.js'
+));
+SyntaxHighlighter.all();
 
 });
 </script>
