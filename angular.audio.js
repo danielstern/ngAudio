@@ -109,8 +109,6 @@ angular.module('ngAudio', [])
 
   this.getAudio = function(id) {
 
-    console.log("Getting audio?", id, allSoundsLoaded);
-
     var matchingSound = soundLoaded(id);
     var audObj = matchingSound || new AudioObject();
 
@@ -138,7 +136,6 @@ angular.module('ngAudio', [])
     })
 
       function soundCanPlay() {
-        console.log("Sound resolved,", uri);
         k.resolve(audio);
       }
     return k.promise;
@@ -200,7 +197,6 @@ angular.module('ngAudio', [])
     }
 
     this.setVolume = function(vol) {
-      console.log("Setting volume",vol);
       volume = vol;
       try {
 
@@ -214,7 +210,6 @@ angular.module('ngAudio', [])
     this.play = function(_sound) {
       var sound = _sound || this.sound;
       if (!sound) {
-        console.log("Deferring play");
         deferredPlay = true;
         return;
       }
@@ -247,7 +242,6 @@ angular.module('ngAudio', [])
       //if (!this.sound || !this.sound.play) return;
       this.pause();
       try {
-        console.log("stopping", this.sound, this);
         this.sound.currentTime = 0;
       } catch (e) {
         console.warn("Sound error");
@@ -272,7 +266,6 @@ angular.module('ngAudio', [])
 
 
     this.enableSong = function() {
-      console.log("Enabling song", this);
       song = true;
       this.song = true;
     };
@@ -377,7 +370,7 @@ angular.module('ngAudio', [])
     })
   };
 
-  this.unmute = function(id) {
+  this.unmute = function(ids) {
     if (!_.isArray(ids)) {
       ids = [ids];
     }
