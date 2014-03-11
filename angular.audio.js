@@ -3,7 +3,6 @@
 License: PLEASE USE FOR EVIL*/
 
 angular.module('ngAudio', [])
-/* Directive for creating a special audio element */
 .directive('ngAudio', function($compile, ngAudio, $q) {
   return {
     restrict: 'AE',
@@ -29,7 +28,6 @@ angular.module('ngAudio', [])
         return;
       }
 
-      /* Add a click listner to the element the directive is on. */
       $element.on('click', function(e) {
         ngAudio.play($attrs.ngAudio);
       })
@@ -56,7 +54,6 @@ angular.module('ngAudio', [])
       audObj.startAt = $sound.getAttribute('startAt') || 0;
       audObj.defaultSong = $sound.hasAttribute('song');
       audObj.selector = str;
-      console.log("Resolved song from HTML", audObj);
 
       if (audObj.defaultVolume) {
         audObj.setVolume(audObj.defaultVolume);
@@ -68,13 +65,12 @@ angular.module('ngAudio', [])
 
       if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
       r.resolve(audObj);
-      
+
 
     } else {
 
       _load(str)
         .then(function(res) {
-          //console.log("Resolved loaded song",audObj,res);
           audObj.setSound(res);
           audObj.src = str;
           if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
@@ -82,15 +78,12 @@ angular.module('ngAudio', [])
         });
     }
 
-    audObj.addListener(function(type,target){
-      console.log("Got event",type,target);
+    audObj.addListener(function(type, target) {
       if (type == 'song-play') {
-        //console.log("Sou")
         var songs = getAllSongs();
-        //console.log("All songs?",songs);
-        _.each(songs,function(song){
+        _.each(songs, function(song) {
           if (song.src != target.src)
-          song.stop();
+            song.stop();
         })
       }
     })
@@ -115,15 +108,13 @@ angular.module('ngAudio', [])
   }
 
   this.getAudio = function(id) {
-   // console.log("Getting audio for",id);
-    var matchingSound = soundLoaded(id);
-    //console.log("Matching sound?",matchingSound,allSoundsLoaded);
 
+    var matchingSound = soundLoaded(id);
     var audObj = matchingSound || new AudioObject();
 
     if (!matchingSound) {
-    	audObj.src = id;
-    	audObj.selector = id;
+      audObj.src = id;
+      audObj.selector = id;
     }
     this.loadAudio(id, audObj);
     return audObj;
@@ -134,13 +125,10 @@ angular.module('ngAudio', [])
     var k = $q.defer();
     var audio = new Audio();
 
-    //console.log("Adding listener to audio", audio);
-
     audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
     audio.src = uri;
 
     function soundCanPlay() {
-      console.log("Resolving");
       k.resolve(audio);
     }
     return k.promise;
@@ -194,9 +182,9 @@ angular.module('ngAudio', [])
       oldVolume = this.sound.volume;
       this.sound.volume = oldVolume || 1;
     }
-    
+
     this.unmute = function() {
-    	if (!this.sound) return;
+      if (!this.sound) return;
       muting = false;
       this.sound.volume = oldVolume || 1;
     }
@@ -205,16 +193,15 @@ angular.module('ngAudio', [])
     this.play = function(_sound) {
       var sound = _sound || this.sound;
       if (!sound) {
-      //  console.log("Deferring play");
         deferredPlay = true;
         return;
       }
-      console.log("Playing",this);
+      console.log("Playing", this);
       deferredPlay = false;
 
       if (muting) return;
       if (this.isSong() && songmuting) return;
-      
+
       this.stop();
 
       if (this.startAt) {
@@ -222,9 +209,8 @@ angular.module('ngAudio', [])
       }
 
       if (song) {
-        console.log("I'm playing, and i'm a song!");
-        _.each(listeners,function(li){
-          li('song-play',o);
+        _.each(listeners, function(li) {
+          li('song-play', o);
         })
       }
 
@@ -234,21 +220,19 @@ angular.module('ngAudio', [])
     var i;
 
     this.stop = function() {
-    	if (!this.sound) return;
+      if (!this.sound) return;
       this.pause();
       this.sound.currentTime = 0;
     };
 
     this.pause = function() {
-    	if (!this.sound) return;
+      if (!this.sound) return;
       this.sound.pause();
     }
 
     this.setSound = function(_sound) {
-  
       o.sound = _sound;
       o.handleDeffered(_sound);
-
     }
 
     this.handleDeffered = function(_sound) {
@@ -259,8 +243,7 @@ angular.module('ngAudio', [])
 
 
     this.enableSong = function() {
-    	//console.log("Enabling song",this);
-    	song = true;
+      song = true;
     };
 
     this.isSong = function() {
@@ -284,9 +267,8 @@ angular.module('ngAudio', [])
   this.play = function(id) {
     if (muting) return;
 
-		var audObj = l.getAudio(id);
-    //console.log("PLaying this object",audObj);
-		audObj.play();
+    var audObj = l.getAudio(id);
+    audObj.play();
   }
 
   this.getAllSongs = l.getAllSongs;
@@ -296,26 +278,14 @@ angular.module('ngAudio', [])
       ids = [ids];
     }
     _.each(ids, function(id) {
-      //  songs.push(id);
       var audObj = l.getAudio(id);
       audObj.enableSong();
     })
   }
 
-  this.mute = function(ids) {
-    if (!_.isArray(ids)) {
-      ids = [ids];
-    }
-    _.each(ids, function(id) {
-      var audObj = getAudio(id);
-      audObj.mute();
-    })
-  };
-
   this.muteAll = function() {
-    //a.stopAll();
+    
     _.each(l.getAllSounds(), function(audObj) {
-      //var audObj = getAudio(id);
       audObj.mute();
     })
     muting = true;
@@ -323,9 +293,7 @@ angular.module('ngAudio', [])
 
   this.unmuteAll = function() {
     _.each(l.getAllSounds(), function(audObj) {
-
-      audObj.unmute();
-
+       audObj.unmute();
     })
     muting = false;
   }
@@ -340,20 +308,17 @@ angular.module('ngAudio', [])
     songmuting = !songmuting;
     var allSongs = l.getAllSongs();
     if (songmuting) {
-      _.each(allSongs,function(audObj){
-      //  console.log("Song muting this object",audObj);
+      _.each(allSongs, function(audObj) {
         audObj.muteSong();
       })
     } else {
-      _.each(allSongs,function(audObj){
-      //  console.log("Song muting this object",audObj);
+      _.each(allSongs, function(audObj) {
         audObj.unmuteSong();
       })
     }
   }
 
   this.toggleMuteAll = function() {
-    //  console.log("Toggling mute", muting);
     muting ? a.unmuteAll() : a.muteAll();
   }
 
@@ -368,9 +333,24 @@ angular.module('ngAudio', [])
     });
   }
 
+  this.mute = function(ids) {
+    if (!_.isArray(ids)) {
+      ids = [ids];
+    }
+    _.each(ids, function(id) {
+      var audObj = getAudio(id);
+      audObj.mute();
+    })
+  };
+
   this.unmute = function(id) {
-    mutedSounds = _.without(mutedSounds, id);
-    a.setSoundVolume(id, soundVolumes[id]);
+    if (!_.isArray(ids)) {
+      ids = [ids];
+    }
+    _.each(ids, function(id) {
+      var audObj = getAudio(id);
+      audObj.unmute();
+    })
   };
 
 
@@ -390,11 +370,8 @@ angular.module('ngAudio', [])
     };
 
     _.each(ids, function(id) {
-
       var $sound = l.getAudio(id);
       $sound.stop();
-
     });
-
   };
 })
