@@ -19,6 +19,9 @@ Simply include the angular.audio file to be able to require the ngAudio module i
 </head>
 ```
 
+Check out the project page for full usage.
+[Project Page](http://danielstern.github.io/ngAudio/)
+
 ngAudio Directive
 -----
 The ngAudio directive can be added to the dom as an element or an attribute. It has different effects depending on how you use it.
