@@ -28,7 +28,8 @@
 	</div>
 
 	<h2>Using Code to Play Songs</h2>
-	TODO
+	<button ng-click="playSound('click2')">I play a sound by referring to the ID of an audio tag</button>
+	<button ng-click="playSound('audio/click3.mp3')">I play a sound by referring to a url</button>
 
 	<h2>Defining Special Properties with Directives</h2>
 		<ng-audio
@@ -91,6 +92,10 @@ angular.module('audioDemo',['ngAudio'])
 
 	$scope.toggleMute = function(str) {
 		ngAudio.toggleMute(str);
+	}
+
+	$scope.playSound = function(str) {
+		ngAudio.play(str);
 	}
 
 });
