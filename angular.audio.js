@@ -233,6 +233,7 @@ angular.module('ngAudio', [])
 
       //if (this.isSong() && songmuting) return;
       this.setVolume(volume);
+      if (songmuting) return;
       sound.play();
     };
 
