@@ -46,8 +46,13 @@
 		MUTING!!
 	</div>
 	<div>
-		<button ng-click='toggleMuteAll()'>I mute everything</button>
 		<button ng-click="toggleMute('audio/exit.mp3')">I mute just button B's sound</button>
+		<button ng-click="toggleMute(['audio/exit.mp3','click2'])">
+			And I mute A and B's sounds
+		</button>
+		<div>
+			<button ng-click='toggleMuteAll()'>I mute everything globally</button>
+		</div>
 	</div>
 		<div>
 			<button ng-audio='click2'>A</button>
@@ -60,7 +65,7 @@
 				And I play another song, but we don't play at the same time!
 			</button>
 			<div>
-			<button ng-click="toggleMute(['audio/song1.mp3','audio/song2.mp3'])">
+			<button ng-click="toggleMuteAllSongs()">
 				And I mute all songs!
 			</button>
 		</div>
@@ -79,6 +84,10 @@ angular.module('audioDemo',['ngAudio'])
 	};
 
 	ngAudio.isMusic(['audio/song1.mp3','audio/song2.mp3'])
+
+	$scope.toggleMuteAllSongs = function() {
+		ngAudio.toggleMuteAllSongs();
+	}
 
 	$scope.toggleMute = function(str) {
 		ngAudio.toggleMute(str);

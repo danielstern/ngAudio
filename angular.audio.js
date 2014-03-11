@@ -105,6 +105,8 @@ angular.module('ngAudio', [])
     })
   }
 
+  this.getAllSongs = getAllSongs;
+
   function soundLoaded(id) {
     return _.find(allSoundsLoaded, function(audObj) {
       if (audObj.src == id) return true;
@@ -154,6 +156,7 @@ angular.module('ngAudio', [])
     var muting = false;
     var deferredPlay = false;
     var listeners = [];
+    var songmuting = false;
 
     this.getVolume = function() {
       return this.sound.volume;
@@ -177,6 +180,20 @@ angular.module('ngAudio', [])
       oldVolume = this.sound.volume;
       this.sound.volume = 0;
     };
+
+    this.muteSong = function() {
+      songmuting = true;
+      if (!this.sound) return;
+      oldVolume = this.sound.volume;
+      this.sound.volume = 0;
+    }
+
+    this.unmuteSong = function() {
+      songmuting = false;
+      if (!this.sound) return;
+      oldVolume = this.sound.volume;
+      this.sound.volume = oldVolume || 1;
+    }
     
     this.unmute = function() {
     	if (!this.sound) return;
@@ -196,6 +213,7 @@ angular.module('ngAudio', [])
       deferredPlay = false;
 
       if (muting) return;
+      if (this.isSong() && songmuting) return;
       
       this.stop();
 
@@ -259,6 +277,7 @@ angular.module('ngAudio', [])
   var a = this,
 
     muting = false,
+    songmuting = false,
     l = ngAudioLoader;
 
 
@@ -269,6 +288,8 @@ angular.module('ngAudio', [])
     //console.log("PLaying this object",audObj);
 		audObj.play();
   }
+
+  this.getAllSongs = l.getAllSongs;
 
   this.isMusic = function(ids) {
     if (!_.isArray(ids)) {
@@ -313,6 +334,22 @@ angular.module('ngAudio', [])
     _.each(l.getAllSounds(), function(audObj) {
       audObj.stop();
     })
+  }
+
+  this.toggleMuteAllSongs = function() {
+    songmuting = !songmuting;
+    var allSongs = l.getAllSongs();
+    if (songmuting) {
+      _.each(allSongs,function(audObj){
+      //  console.log("Song muting this object",audObj);
+        audObj.muteSong();
+      })
+    } else {
+      _.each(allSongs,function(audObj){
+      //  console.log("Song muting this object",audObj);
+        audObj.unmuteSong();
+      })
+    }
   }
 
   this.toggleMuteAll = function() {
