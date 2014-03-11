@@ -52,7 +52,20 @@ angular.module('ngAudio', [])
     if ($sound) {
       audObj.setSound($sound);
       audObj.src = $sound.getAttribute('src');
+      audObj.defaultVolume = $sound.getAttribute('volume') || 0;
+      audObj.startAt = $sound.getAttribute('startAt') || 0;
+      audObj.defaultSong = $sound.hasAttribute('song');
       audObj.selector = str;
+      console.log("Resolved song from HTML", audObj);
+
+      if (audObj.defaultVolume) {
+        audObj.setVolume(audObj.defaultVolume);
+      }
+
+      if (audObj.defaultSong) {
+        audObj.enableSong();
+      }
+
       if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
       r.resolve(audObj);
       
@@ -61,7 +74,7 @@ angular.module('ngAudio', [])
 
       _load(str)
         .then(function(res) {
-          console.log("Resolved loaded song",audObj)
+          //console.log("Resolved loaded song",audObj,res);
           audObj.setSound(res);
           audObj.src = str;
           if (!soundLoaded(str)) allSoundsLoaded.push(audObj);
@@ -69,13 +82,14 @@ angular.module('ngAudio', [])
         });
     }
 
-    audObj.addListener(function(type){
-      console.log("Got event",type);
+    audObj.addListener(function(type,target){
+      console.log("Got event",type,target);
       if (type == 'song-play') {
         //console.log("Sou")
         var songs = getAllSongs();
-        console.log("All songs?",songs);
+        //console.log("All songs?",songs);
         _.each(songs,function(song){
+          if (song.src != target.src)
           song.stop();
         })
       }
@@ -99,9 +113,9 @@ angular.module('ngAudio', [])
   }
 
   this.getAudio = function(id) {
-    console.log("Getting audio for",id);
+   // console.log("Getting audio for",id);
     var matchingSound = soundLoaded(id);
-    console.log("Matching sound?",matchingSound,allSoundsLoaded);
+    //console.log("Matching sound?",matchingSound,allSoundsLoaded);
 
     var audObj = matchingSound || new AudioObject();
 
@@ -118,7 +132,7 @@ angular.module('ngAudio', [])
     var k = $q.defer();
     var audio = new Audio();
 
-    console.log("Adding listener to audio", audio);
+    //console.log("Adding listener to audio", audio);
 
     audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
     audio.src = uri;
@@ -178,20 +192,24 @@ angular.module('ngAudio', [])
         deferredPlay = true;
         return;
       }
-      console.log("Playing",this,this.isSong());
+      console.log("Playing",this);
       deferredPlay = false;
 
       if (muting) return;
+      
+      this.stop();
+
+      if (this.startAt) {
+        sound.currentTime = Number(this.startAt);
+      }
 
       if (song) {
         console.log("I'm playing, and i'm a song!");
         _.each(listeners,function(li){
-          li('song-play');
+          li('song-play',o);
         })
       }
 
-
-      this.stop();
       sound.play();
     };
 
@@ -223,7 +241,7 @@ angular.module('ngAudio', [])
 
 
     this.enableSong = function() {
-    	console.log("Enabling song",this);
+    	//console.log("Enabling song",this);
     	song = true;
     };
 
@@ -274,11 +292,20 @@ angular.module('ngAudio', [])
   };
 
   this.muteAll = function() {
-    a.stopAll();
+    //a.stopAll();
+    _.each(l.getAllSounds(), function(audObj) {
+      //var audObj = getAudio(id);
+      audObj.mute();
+    })
     muting = true;
   }
 
   this.unmuteAll = function() {
+    _.each(l.getAllSounds(), function(audObj) {
+
+      audObj.unmute();
+
+    })
     muting = false;
   }
 

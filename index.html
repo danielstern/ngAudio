@@ -27,7 +27,21 @@
 		<button ng-audio='audio/exit.mp3'>I'll play a sound that's not embedded in the document.</button>
 	</div>
 
-	<h2>Controlling Sound with Code</h2>
+	<h2>Using Code to Play Songs</h2>
+	TODO
+
+	<h2>Defining Special Properties with Directives</h2>
+		<ng-audio
+			 id='song3' 
+			 song
+			 volume='0.4' 
+			 startAt="10" 
+			 src='audio/song3.mp3'>
+		</ng-audio>
+
+		<button ng-audio='song3'>I play a sound with special properties written into the HTML.</button>
+
+	<h2>Mutings Sound with Code</h2>
 	<div ng-hide='!muting'>
 		MUTING!!
 	</div>
