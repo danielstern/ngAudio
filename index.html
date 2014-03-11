@@ -17,15 +17,24 @@
 
 	<h1>Angular Audio</h1>
 	<h2>Using the Directive to Play a Sound</h2>
-	<pre class="brush: js; toolbar: false;">&lt;div&gt;Hello&lt;/div&gt;
-	&lt;audio ng-audio id='click1'&gt;
-	  &lt;source src=&quot;audio/click.mp3&quot; type=&quot;audio/mp3&quot;&gt;
-	&lt;/audio&gt;
+	<p>
+		You can play any sound that has been added to the DOM by adding ngAudio to any clickable element (like a button)
+	</p>
+	<pre class="brush: html; toolbar: false;">
+&lt;audio id='click1'&gt;
+	&lt;source src=&quot;audio/click.mp3&quot; type=&quot;audio/mp3&quot;&gt;
+&lt;/audio&gt;
 
-	&lt;ng-audio id='click2' src='audio/click2.mp3'&gt;
-	&lt;/ng-audio&gt;
-&lt;/code&gt;
+&lt;button ng-audio='click1'&gt;Click me and an embedded sound will play&lt;/button&gt;
 		</pre>
+	<button ng-audio='click1'>Click me and an embedded sound will play</button>
+	<h3>Using a URL</h3>
+		<p>
+			Alternatively, you can specify a URL. In that case, the URL will be loaded, and then played.
+		</p>
+
+			<pre class="brush: html; toolbar: false;">
+&lt;button ng-audio='audio/exit.mp3'&gt;I'll load a sound and then play it.&lt;/button&gt;			</pre>
 
 		<audio ng-audio id='click1'>
 		  <source src="audio/click.mp3" type="audio/mp3">
@@ -34,14 +43,43 @@
 		<ng-audio id='click2' src='audio/click2.mp3'>
 		</ng-audio>
 		<div>
-		<button ng-audio='click1'>Click me and an embedded sound will play</button>
+	
 	</div>
 	<div>
 		<button ng-audio='audio/exit.mp3'>I'll load a sound and then play it.</button>
 	</div>
 
 	<h2>Using Code to Play Songs</h2>
+	<pre class="brush: js; toolbar: false;">
+<button ng-click="playSound('click2')">I play a sound by referring to the ID of an audio tag</button>
+
+<audio id='click2' src='audio/click2.mp3'></audio>
+
+<script>
+angular.module('audioDemo',['ngAudio'])
+.controller('audioDemo',function($scope,ngAudio){
+	
+	$scope.playSound = function(str) {
+		ngAudio.play(str);
+	}
+</script>
+	</pre>
 	<button ng-click="playSound('click2')">I play a sound by referring to the ID of an audio tag</button>
+
+	<h3>Specifying a URL with Code</h2>
+	<p>The ngAudio provides a handy way to simply load a sound and play it.</p>
+		<pre class="brush: js; toolbar: false;">
+	<button ng-click="playSound('audio/click3.mp3')">I play a sound by referring to a url</button>
+
+	<script>
+	angular.module('audioDemo',['ngAudio'])
+	.controller('audioDemo',function($scope,ngAudio){
+		
+		$scope.playSound = function(str) {
+			ngAudio.play(str);
+		}
+	</script>
+		</pre>
 	<button ng-click="playSound('audio/click3.mp3')">I play a sound by referring to a url</button>
 
 	<h2>Defining Special Properties with Directives</h2>
