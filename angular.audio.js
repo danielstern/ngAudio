@@ -3,37 +3,37 @@
 License: PLEASE USE FOR EVIL*/
 
 angular.module('ngAudio', [])
-.directive('ngAudio', function($compile, ngAudio, $q) {
-  return {
-    restrict: 'AE',
-    controller: function($scope, $attrs, $element) {
+  .directive('ngAudio', function($compile, ngAudio, $q) {
+    return {
+      restrict: 'AE',
+      controller: function($scope, $attrs, $element) {
 
-      if ($element[0].nodeName == 'AUDIO') {
-        return;
-      }
-
-      if ($element[0].nodeName == 'NG-AUDIO') {
-
-        var audio = angular.element(document.createElement('audio'));
-        audio.attr('ng-audio');
-
-        $element.attr('id', '');
-        for (attr in $attrs.$attr) {
-          var attrName = attr;
-          audio.attr(attrName, $attrs[attrName]);
+        if ($element[0].nodeName == 'AUDIO') {
+          return;
         }
 
-        var el = $compile(audio)($scope);
-        $element.append(audio);
-        return;
-      }
+        if ($element[0].nodeName == 'NG-AUDIO') {
 
-      $element.on('click', function(e) {
-        ngAudio.play($attrs.ngAudio);
-      })
-    },
-  }
-})
+          var audio = angular.element(document.createElement('audio'));
+          audio.attr('ng-audio');
+
+          $element.attr('id', '');
+          for (attr in $attrs.$attr) {
+            var attrName = attr;
+            audio.attr(attrName, $attrs[attrName]);
+          }
+
+          var el = $compile(audio)($scope);
+          $element.append(audio);
+          return;
+        }
+
+        $element.on('click', function(e) {
+          ngAudio.play($attrs.ngAudio);
+        })
+      },
+    }
+  })
 
 .service('ngAudioLoader', function($q) {
   var allSoundsLoaded = [];
@@ -109,6 +109,8 @@ angular.module('ngAudio', [])
 
   this.getAudio = function(id) {
 
+    console.log("Getting audio?", id, allSoundsLoaded);
+
     var matchingSound = soundLoaded(id);
     var audObj = matchingSound || new AudioObject();
 
@@ -125,12 +127,20 @@ angular.module('ngAudio', [])
     var k = $q.defer();
     var audio = new Audio();
 
-    audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
+    //   audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
     audio.src = uri;
 
-    function soundCanPlay() {
-      k.resolve(audio);
-    }
+    var i = setInterval(function() {
+      if (audio.play) {
+        soundCanPlay();
+        clearInterval(i);
+      }
+    })
+
+      function soundCanPlay() {
+        console.log("Sound resolved,", uri);
+        k.resolve(audio);
+      }
     return k.promise;
   }
 
@@ -145,6 +155,7 @@ angular.module('ngAudio', [])
     var deferredPlay = false;
     var listeners = [];
     var songmuting = false;
+    var volume = 1;
 
     this.getVolume = function() {
       return this.sound.volume;
@@ -164,35 +175,46 @@ angular.module('ngAudio', [])
 
     this.mute = function() {
       muting = true;
-      if (!this.sound) return;
-      oldVolume = this.sound.volume;
-      this.sound.volume = 0;
+      oldVolume = volume;
+      volume = 0;
+      this.setVolume(volume)
     };
 
     this.muteSong = function() {
       songmuting = true;
-      if (!this.sound) return;
-      oldVolume = this.sound.volume;
-      this.sound.volume = 0;
+      oldVolume = volume;
+      volume = 0;
+      this.setVolume(volume)
     }
 
     this.unmuteSong = function() {
       songmuting = false;
-      if (!this.sound) return;
-      oldVolume = this.sound.volume;
-      this.sound.volume = oldVolume || 1;
+      volume = oldVolume || 1;
+      this.setVolume(volume)
     }
 
     this.unmute = function() {
-      if (!this.sound) return;
       muting = false;
-      this.sound.volume = oldVolume || 1;
+      volume = oldVolume || 1;
+      this.setVolume(volume)
+    }
+
+    this.setVolume = function(vol) {
+      console.log("Setting volume",vol);
+      volume = vol;
+      try {
+
+        this.sound.volume = vol;
+      } catch (e) {
+        console.warn("sound edit error.")
+      }
     }
 
 
     this.play = function(_sound) {
       var sound = _sound || this.sound;
       if (!sound) {
+        console.log("Deferring play");
         deferredPlay = true;
         return;
       }
@@ -200,11 +222,11 @@ angular.module('ngAudio', [])
       deferredPlay = false;
 
       if (muting) return;
-      if (this.isSong() && songmuting) return;
+      //if (this.isSong() && songmuting) return;
 
-      this.stop();
+      if (!this.isSong()) this.stop();
 
-      if (this.startAt) {
+      if (this.startAt && sound.currentTime < this.startAt) {
         sound.currentTime = Number(this.startAt);
       }
 
@@ -214,15 +236,22 @@ angular.module('ngAudio', [])
         })
       }
 
+      //if (this.isSong() && songmuting) return;
+      this.setVolume(volume);
       sound.play();
     };
 
     var i;
 
     this.stop = function() {
-      if (!this.sound) return;
+      //if (!this.sound || !this.sound.play) return;
       this.pause();
-      this.sound.currentTime = 0;
+      try {
+        console.log("stopping", this.sound, this);
+        this.sound.currentTime = 0;
+      } catch (e) {
+        console.warn("Sound error");
+      }
     };
 
     this.pause = function() {
@@ -243,7 +272,9 @@ angular.module('ngAudio', [])
 
 
     this.enableSong = function() {
+      console.log("Enabling song", this);
       song = true;
+      this.song = true;
     };
 
     this.isSong = function() {
@@ -269,6 +300,8 @@ angular.module('ngAudio', [])
 
     var audObj = l.getAudio(id);
     audObj.play();
+
+    if (songmuting && audObj.isSong()) audObj.muteSong();
   }
 
   this.getAllSongs = l.getAllSongs;
@@ -284,7 +317,7 @@ angular.module('ngAudio', [])
   }
 
   this.muteAll = function() {
-    
+
     _.each(l.getAllSounds(), function(audObj) {
       audObj.mute();
     })
@@ -293,7 +326,7 @@ angular.module('ngAudio', [])
 
   this.unmuteAll = function() {
     _.each(l.getAllSounds(), function(audObj) {
-       audObj.unmute();
+      audObj.unmute();
     })
     muting = false;
   }
@@ -307,6 +340,7 @@ angular.module('ngAudio', [])
   this.toggleMuteAllSongs = function() {
     songmuting = !songmuting;
     var allSongs = l.getAllSongs();
+    console.log("muting all songs", allSongs);
     if (songmuting) {
       _.each(allSongs, function(audObj) {
         audObj.muteSong();
