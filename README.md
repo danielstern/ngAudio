@@ -59,7 +59,9 @@ You can also apply an ngAudio tag to an existing audio elements for the same gre
 ```
 
 ###ngAudio Directive Supported Attributes
-*none yet*
+A few attributes are supported. See the project page.
+[Project Page](http://danielstern.github.io/ngAudio/)
+
 
 ### Playing Sounds with the Directive
 
