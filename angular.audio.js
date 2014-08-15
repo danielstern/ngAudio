@@ -243,11 +243,7 @@ angular.module('ngAudio', [])
     this.stop = function() {
       //if (!this.sound || !this.sound.play) return;
       this.pause();
-      try {
-        this.sound.currentTime = 0;
-      } catch (e) {
-        console.warn("Sound error");
-      }
+      if (this.sound && this.sound.currentTime) this.sound.currentTime = 0;
     };
 
     this.pause = function() {
