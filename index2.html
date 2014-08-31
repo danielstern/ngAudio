@@ -5,6 +5,7 @@
 	angular.module("ngAudioDemo",['ngAudio'])
 	.controller('Demo',function(ngAudio){
 		console.log("demo init...");
+		ngAudio.play('audio/laser.mp3');
 		ngAudio.play('test');
 	})
 </script>
