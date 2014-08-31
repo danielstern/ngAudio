@@ -1,5 +1,5 @@
 {
-  "name": "ngAudio",
+  "name": "ng-audio",
   "version": "0.0.2",
   "homepage": "https://github.com/danielstern/ngAudio",
   "description": "Directive for playing sounds",
