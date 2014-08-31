@@ -1,0 +1,14 @@
+		<script src='lib/angular.js'></script>
+		<script src='angular.audio.js'></script>
+
+<script>
+	angular.module("ngAudioDemo",['ngAudio'])
+	.controller('Demo',function(ngAudio){
+		console.log("demo init...");
+		ngAudio.play('test');
+	})
+</script>
+
+<body ng-app=ngAudioDemo ng-controller=Demo>
+
+</body>
