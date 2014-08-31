@@ -36,7 +36,7 @@ angular.module('ngAudio', [])
         }
     })
 
-.service('ngAudioLoader', function($q) {
+.service('ngAudioLoader', function($q, AudioObject) {
     var allSoundsLoaded = [];
 
     this.getAllSounds = function() {
@@ -144,7 +144,12 @@ angular.module('ngAudio', [])
         return k.promise;
     }
 
-    var AudioObject = function() {
+
+
+})
+
+.factory('AudioObject', function() {
+  return function(){
         this.play = undefined;
         this.stop = undefined;
         this.sound = undefined;
@@ -275,10 +280,9 @@ angular.module('ngAudio', [])
             return song;
         }
 
-    }
+      }
 
-
-})
+    })
 
 /* Service for use inside code */
 .service('ngAudio', function($q, ngAudioLoader) {
