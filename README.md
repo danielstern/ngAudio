@@ -7,6 +7,12 @@ Description
 ---
 The ngAudio module comes with two handy components, a **directive** for playing sounds using the dom, and a **service** for handling sound inside your code.
 
+## Installation
+
+```
+  bower install --save angular-audio
+```
+
 ### Usage
 -----
 
