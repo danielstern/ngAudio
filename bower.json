@@ -1,25 +1,8 @@
 {
   "name": "angular-audio",
-  "version": "0.0.2",
-  "homepage": "https://github.com/danielstern/ngAudio",
-  "description": "Directive for playing sounds",
-  "main": "angular.audio.js",
-  "keywords": [
-    "audio",
-    "sound",
-    "angular",
-    "module",
-    "directive"
-  ],
-  "authors": [
-    "daniel stern"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ]
+  "private": true,
+  "dependencies": {
+    "bootstrap": "~3.2.0",
+    "angular": "~1.2.23"
+  }
 }
