@@ -114,7 +114,7 @@ angular.module('ngAudio', [])
     }
 })
 
-.factory("ngAudioObject", function(cleverAudioFindingService, $rootScope, $interval) {
+.factory("ngAudioObject", function(cleverAudioFindingService, $rootScope, $interval,$timeout) {
     return function(id) {
 
         var audio = undefined;
@@ -135,6 +135,16 @@ angular.module('ngAudio', [])
             }
         }
 
+        this.setProgress = function(progress) {
+          // return;
+          audio.pause();
+          // audio.src = audio.src;
+            audio.currentTime = audio.duration * progress;
+          // })
+          console.log('setting progress...',progress,audio.duration,audio.currentTime);
+
+        }
+
         cleverAudioFindingService.find(id)
             .then(function(nativeAudio) {
                 audio = nativeAudio;
@@ -144,14 +154,17 @@ angular.module('ngAudio', [])
             });
 
         function $setWatch() {
+            
             $watch = $rootScope.$watch(function() {
-                return audioObject;
+                return audioObject.progress;
             }, function(newValue, oldValue) {
                 if (newValue == oldValue) {
                     return;
                 }
-                console.log("colleciton changed");
-            });
+                console.log("colleciton changed",newValue,oldValue);
+                audioObject.setProgress(newValue);
+
+            }, true);
         }
 
 
