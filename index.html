@@ -84,6 +84,8 @@ angular.module('audioDemo',['ngAudio'])
 	$scope.playSound = function(str) {
 		ngAudio.play(str);
 	}
+
+});
 </script>
 	</pre>
 	<button ng-click="playSound('click2')">I play a sound by referring to the ID of an audio tag</button>
@@ -100,6 +102,8 @@ angular.module('audioDemo',['ngAudio'])
 		$scope.playSound = function(str) {
 			ngAudio.play(str);
 		}
+
+		});
 	</script>
 		</pre>
 	<button ng-click="playSound('audio/click3.mp3')">I play a sound by referring to a url</button>
