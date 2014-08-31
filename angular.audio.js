@@ -6,28 +6,25 @@ License: PLEASE USE FOR EVIL*/
 angular.module('ngAudio', [])
     .directive('ngAudio', function($compile, ngAudio, $q) {
         return {
-            restrict: 'AE',
+            restrict: 'AEC',
+            link: function(scope,element,attrs) {
+
+              if (element[0].nodeName == 'NG-AUDIO') {
+
+                  var audio = angular.element(document.createElement('audio'));
+                  audio.attr('ng-audio');
+
+                  element.attr('id', '');
+                  for (var prop in attrs.$attr) {
+                      audio.attr(prop, attrs[prop]);
+                  };
+
+                  var el = $compile(audio)(scope);
+                  element.append(audio);
+              }
+
+            },
             controller: function($scope, $attrs, $element) {
-
-                if ($element[0].nodeName == 'AUDIO') {
-                    return;
-                }
-
-                if ($element[0].nodeName == 'NG-AUDIO') {
-
-                    var audio = angular.element(document.createElement('audio'));
-                    audio.attr('ng-audio');
-
-                    $element.attr('id', '');
-                    for (var attr in $attrs.$attr) {
-                        var attrName = attr;
-                        audio.attr(attrName, $attrs[attrName]);
-                    }
-
-                    var el = $compile(audio)($scope);
-                    $element.append(audio);
-                    return;
-                }
 
                 $element.on('click', function(e) {
                     ngAudio.play($attrs.ngAudio);
@@ -289,8 +286,7 @@ angular.module('ngAudio', [])
     var a = this,
 
         muting = false,
-        songmuting = false,
-        l = ngAudioLoader;
+        songmuting = false;
 
     function eachify(arg) {
         if (!arg instanceof Array) {
@@ -304,27 +300,27 @@ angular.module('ngAudio', [])
     this.play = function(id) {
         if (muting) return;
 
-        var audioObj = l.getAudio(id);
+        var audioObj = ngAudioLoader.getAudio(id);
         audioObj.play();
 
         if (songmuting && audioObj.isSong()) audioObj.muteSong();
     }
 
-    this.getAllSongs = l.getAllSongs;
+    this.getAllSongs = ngAudioLoader.getAllSongs;
 
     this.isMusic = function(ids) {
 
         var eachifiedIds = eachify(ids);
 
         eachify(ids).forEach(function(id) {
-            var audioObj = l.getAudio(id);
+            var audioObj = ngAudioLoader.getAudio(id);
             audioObj.enableSong();
         })
     }
 
     this.muteAll = function() {
 
-        l.getAllSounds().forEach(function(audioObj) {
+        ngAudioLoader.getAllSounds().forEach(function(audioObj) {
             audioObj.mute();
         })
 
@@ -332,21 +328,21 @@ angular.module('ngAudio', [])
     }
 
     this.unmuteAll = function() {
-        l.getAllSounds().forEach(function(audioObj) {
+        ngAudioLoader.getAllSounds().forEach(function(audioObj) {
             audioObj.unmute();
         })
         muting = false;
     }
 
     this.stopAll = function() {
-        l.getAllSounds().forEach(function(audioObj) {
+        ngAudioLoader.getAllSounds().forEach(function(audioObj) {
             audioObj.stop();
         })
     }
 
     this.toggleMuteAllSongs = function() {
         songmuting = !songmuting;
-        var allSongs = l.getAllSongs();
+        var allSongs = ngAudioLoader.getAllSongs();
 
         if (songmuting) {
             allSongs.forEach(function(audioObj) {
@@ -366,7 +362,7 @@ angular.module('ngAudio', [])
     this.toggleMute = function(ids) {
 
         eachify(ids).forEach(function(id) {
-            var audioObj = l.getAudio(id);
+            var audioObj = ngAudioLoader.getAudio(id);
             audioObj.toggleMute();
         });
     }
@@ -390,18 +386,18 @@ angular.module('ngAudio', [])
 
 
     this.getSoundVolume = function(id) {
-        var $sound = l.getAudio(id);
+        var $sound = ngAudioLoader.getAudio(id);
         return $sound.getVolume();
     }
 
     this.setSoundVolume = function(id, vol) {
-        var $sound = l.getAudio(id);
+        var $sound = ngAudioLoader.getAudio(id);
         $sound.setVolume(vol);
     }
 
     this.stop = function(ids) {
         eachify(ids).forEach(function(id) {
-            var $sound = l.getAudio(id);
+            var $sound = ngAudioLoader.getAudio(id);
             $sound.stop();
         });
     };
