@@ -75,7 +75,7 @@ angular.module('ngAudio', [])
             deferred.reject();
         });
 
-        audio.addEventListener('canplay', function(e) {
+        audio.addEventListener('loadstart', function(e) {
             // console.log('remote find success',url);
             deferred.resolve(audio);
         })
@@ -87,31 +87,6 @@ angular.module('ngAudio', [])
 
         return deferred.promise;
 
-    }
-})
-
-.service('cachedAudioFindingService', function($q, audioCacheService) {
-
-    this.find = function(url) {
-        this.getSounds().forEach(function(sound) {
-
-        })
-    }
-})
-
-.service('audioCacheService', function(remoteAudioFindingService, localAudioFindingService) {
-    this.cachedSounds = [];
-
-    remoteAudioFindingService.onGetSound(function(sound) {
-        this.cachedSounds.push(sound);
-    });
-
-    this.push = function(audio) {
-        cachedSounds.push(audio);
-    };
-
-    this.getSounds = function() {
-        return this.cachedSounds;
     }
 })
 
@@ -136,6 +111,8 @@ angular.module('ngAudio', [])
 
 .factory("ngAudioObject", function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
     return function(id) {
+
+        this.id = id;
 
         var audio = undefined;
         var audioObject = this;
@@ -179,6 +156,13 @@ angular.module('ngAudio', [])
         cleverAudioFindingService.find(id)
             .then(function(nativeAudio) {
                 audio = nativeAudio;
+                // audio.addEventListener('progress',function(e){
+                    // console.log("some progress...",e);
+                // });
+                audio.addEventListener('canplay',function(e){
+                    // console.log("can play");
+                    audioObject.canPlay = true;
+                })
             }, function(error) {
                 console.error("Couldn't load::", id);
                 audioObject.error = true;
