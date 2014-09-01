@@ -4,29 +4,34 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
         $stateProvider
             .state("home", {
                 url: "/",
-                templateUrl:"partial/ngAudioDocs.html"
+                templateUrl: "partial/home.html",
+                controller: function($scope, ngAudio) {
+                    $scope.audio = ngAudio.load('audio/song.mp3');
+                }
             })
 
         //  .state('test',{
         //  		url:"/test",
         //  		template:"TEST"
         //  })
-       
-       	// .state('audio',{
-       		// abstract:true,
-            // url:"/"
-       	// 	url:"/audio"
-       	// })
+
+        .state('docs', {
+            url: "/docs",
+            templateUrl: "partial/ngAudioDocs.html",
+            controller: function($scope, ngAudio) {
+                $scope.audio = ngAudio.load('audio/song.mp3');
+            }
+        })
 
         .state("audio", {
             url: "/audio",
             templateUrl: "partial/audioFullView.html",
             // templateUrl: "partial/audioEditView.html",
-            
+
         })
 
-        .state('audio.detail',{
-            url:"/:id",
+        .state('audio.detail', {
+            url: "/:id",
             templateUrl: "partial/audioEditView.html",
             controller: function($stateParams, $scope, ngAudio) {
                 console.log("controller init...");

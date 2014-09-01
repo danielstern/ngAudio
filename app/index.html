@@ -26,18 +26,18 @@
         <div class="navbar navbar-default" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" ui-sref='home'>ngAudio</a>
+                    <a ng-audio='audio/button-1.mp3' class="navbar-brand" ui-sref='home'>ngAudio</a>
                 </div>
-                <div class="navbar-collapse collapse">
+                <div>
                     <ul class="nav navbar-nav navbar-right">
-                        <li ui-sref-active='active'><a ui-sref='home'>Docs</a>
+                        <li ng-audio='audio/button-1.mp3' ui-sref-active='active'><a ui-sref='docs'>Docs</a>
                         </li>
-                        <li ui-sref-active='active'><a  ui-sref='audio'>Demo #1</a>
+                        <li ng-audio='audio/button-1.mp3' ui-sref-active='active'><a  ui-sref='audio.detail({id:"audio|song.mp3"})'>Demo #1</a>
                         </li>
                         <li class="dropdown">
                             <a ui-sref='audio' ui-sref-active='active' class="dropdown-toggle" data-toggle="dropdown">Sounds <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li ng-repeat='audio in audios' ui-sref-active="active"><a ui-sref='audio.detail({id:audio.safeId})'>{{audio.id}}</a>
+                                <li ng-audio='audio/button-1.mp3' ng-repeat='audio in audios' ui-sref-active="active"><a ui-sref='audio.detail({id:audio.safeId})'>{{audio.id}}</a>
                                 </li>
                             </ul>
                         </li>

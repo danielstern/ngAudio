@@ -14,7 +14,7 @@
 
 </p>
 <p>Audio is loaded through the
-    <em>load</em> method of the
+    <em>load</em>method of the
     <strong>ngAudio service</strong>. The load method returns an
     <strong>ngAudioObject</strong>object.</p>
 
@@ -30,13 +30,14 @@ angular.module('yourModule',['ngAudio'])
     <table class="table table-striped table-bordered table-condensed">
         <tr>
             <td>load(path:String):ngAudioObject</td>
-            <td><p>
-                Takes a string and returns an audio object. The audio object can be used before the sound is loaded.
-            </p>
-            <p>
-               Tries first to find an embedded native audio tag with the same ID as the string passed. Tries secondly to load it remotely as a URL. If it fails, an error property will be set to true.
-            </p>
-        </td>
+            <td>
+                <p>
+                    Takes a string and returns an audio object. The audio object can be used before the sound is loaded.
+                </p>
+                <p>
+                    Tries first to find an embedded native audio tag with the same ID as the string passed. Tries secondly to load it remotely as a URL. If it fails, an error property will be set to true.
+                </p>
+            </td>
         </tr>
         <tr>
             <td>play(path:String):ngAudioObject</td>
@@ -78,7 +79,9 @@ angular.module('yourModule',['ngAudio'])
         </tr>
         <tr>
             <td>stop()</td>
-            <td>Restarts the sound. <em>alias restart</em></td>
+            <td>Restarts the sound.
+                <em>alias restart</em>
+            </td>
         </tr>
         <tr>
             <td>currentTime:number</td>
@@ -137,7 +140,8 @@ angular.module('yourModule',['ngAudio'])
             <td>canPlay:boolean (read only)</td>
             <td>
                 <p>
-                    Is true if the sound is loaded enough to play. <em>This is not well supported in all browsers.</em>
+                    Is true if the sound is loaded enough to play.
+                    <em>This is not well supported in all browsers.</em>
                 </p>
             </td>
         </tr>
@@ -153,6 +157,79 @@ angular.module('yourModule',['ngAudio'])
 </article>
 <article>
     <h3>
-    Use as a directive on buttons
+        ngAudio Directive
     </h3>
+    <p>
+        <strong>ngAudio</strong>can be applied as a directive on any element to have it play a sound when clicked. Sounds are preloaded as soon as all other elements on the page are resolved.
+    </p>
+    <code>
+        <pre>&lt;button ng-audio=sounds/mySound.mp3 vol=0.5 start=0.2 &gt; Click me &lt;/button&gt;</pre>
+    </code>
+
+    <table class="table table-striped table-bordered table-condensed">
+        <tr>
+            <td>ngAudio</td>
+            <td>
+                <p>
+                    Takes a string and creates a new object with
+                    <strong>ngAudio.load()</strong>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>vol</td>
+            <td>Specifies a volume for the sound to play.</td>
+        </tr>
+        <tr>
+            <td>start</td>
+            <td>Specifies a start time for the sound.</td>
+        </tr>
+
+    </table>
+</article>
+<article>
+    <h3>
+        Angular Audio Example
+    </h3>
+    <code>
+        <pre>
+<!-- <div ng-controller='audioDemo'>
+<button ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
+<button ng-click='audio.restart()'>Stop</button>
+<button ng-click='audio.muting = !audio.muting'>{{audio.muting ? "Unmute" : "Mute" }}</button>
+
+
+
+
+<label>Current Time</label>
+<input class='form-control' type=text ng-model='audio.currentTime'>
+<label>Volume</label>
+<input class='form-control' type=range min=0 max=1 step=0.01 ng-model='audio.volume'>
+</div>
+<script>
+angular.module('myModule',['ngAudio'])
+.controller('audioDemo',function($scope,ngAudio){
+	$scope.audio = ngAudio.load('mySound.wav');
+})
+</script>
+ -->
+
+ &lt;div ng-controller=&#39;audioDemo&#39;&gt;
+ &lt;button ng-click=&#39;audio.paused ? audio.play() : audio.pause()&#39;&gt;{{audio.paused ? &quot;Play&quot; : &quot;Pause&quot; }}&lt;/button&gt;
+ &lt;button ng-click=&#39;audio.restart()&#39;&gt;Stop&lt;/button&gt;
+ &lt;button ng-click=&#39;audio.muting = !audio.muting&#39;&gt;{{audio.muting ? &quot;Unmute&quot; : &quot;Mute&quot; }}&lt;/button&gt;
+
+ &lt;label&gt;Current Time&lt;/label&gt;
+ &lt;input class=&#39;form-control&#39; type=text ng-model=&#39;audio.currentTime&#39;&gt;
+ &lt;label&gt;Volume&lt;/label&gt;
+ &lt;input class=&#39;form-control&#39; type=range min=0 max=1 step=0.01 ng-model=&#39;audio.volume&#39;&gt;
+ &lt;/div&gt;
+ &lt;script&gt;
+ angular.module(&#39;myModule&#39;,[&#39;ngAudio&#39;])
+ .controller(&#39;audioDemo&#39;,function($scope,ngAudio){
+ 	$scope.audio = ngAudio.load(&#39;mySound.wav&#39;);
+ })
+ &lt;/script&gt;
+		</pre>
+    </code>
 </article>
