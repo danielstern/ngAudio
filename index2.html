@@ -1,0 +1,8 @@
+<script src=lib/angular.js></script><script src=9950b85e.angular.audio.js></script><script>angular.module("ngAudioDemo", ['ngAudio'])
+    .controller('Demo', function($scope, ngAudio) {
+        var audio = ngAudio.load('audio/laser.mp3');
+        var audio2 = ngAudio.load('audio/lid.mp3');
+        $scope.audio3 = ngAudio.load('audio/lidz.mp3');
+        $scope.audio1 = audio;
+        $scope.audio2 = audio2;
+    })</script><body ng-app=ngAudioDemo ng-controller=Demo><!-- <audio id='sword' src='audio/sword.mp3'></audio> --><!-- <button ng-audio="audio/laser.mp3">remote</button> --><!-- <button ng-audio="sword">local</button> --><div ng-repeat="audio in [audio1,audio2,audio3]"><table><tr ng-if=audio.error><td><p>Error playing {{audio.src}}</p><tr><td>name<td>{{audio.src}}<tr><td>progress<td>{{audio.progress}}<tr><td>Time<td>:{{audio.currentTime | number : 2}}<tr><td>Remaining:<td>{{audio.remaining | number : 2}}<tr><td>currentTime<td><input type=range min=0 max=1 step=0.01 ng-model=audio.progress><tr><td><button ng-click=audio.play()>play</button><td><button ng-click=audio.restart()>restart</button></table></div>
