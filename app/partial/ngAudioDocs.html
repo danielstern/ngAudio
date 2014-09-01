@@ -1,4 +1,6 @@
-<h2>ngAudio Documentation</h2>
+<div class='jumbotron'>
+    <h2>ngAudio Documentation</h2>
+</div>
 <h3>Installation</h3>
 <p>Install the package (bower is the recommended way.)</p>
 <code><pre>bower install angular-audio --save</pre>
@@ -8,19 +10,50 @@
 </code>
 
 <h3>Usage</h3>
+<p>
+
+</p>
 <p>Audio is loaded through the
-    <em>load</em>method. The load method returns an
+    <em>load</em> method of the
+    <strong>ngAudio service</strong>. The load method returns an
     <strong>ngAudioObject</strong>object.</p>
 
 <code>
     <pre>
 angular.module('yourModule',['ngAudio'])
 .controller("yourController",function($scope,ngAudio){
-	$scope.sound = ngAudio.load("sounds/mySound.mp3"); // returns ngAudioObject
-})	</pre>
+    $scope.sound = ngAudio.load("sounds/mySound.mp3"); // returns ngAudioObject
+})  </pre>
 </code>
 <article>
-    <h4>ngAudioObjectProperties</h4>
+    <h4>ngAudio Service Reference</h4>
+    <table class="table table-striped table-bordered table-condensed">
+        <tr>
+            <td>load(path:String):ngAudioObject</td>
+            <td><p>
+                Takes a string and returns an audio object. The audio object can be used before the sound is loaded.
+            </p>
+            <p>
+               Tries first to find an embedded native audio tag with the same ID as the string passed. Tries secondly to load it remotely as a URL. If it fails, an error property will be set to true.
+            </p>
+        </td>
+        </tr>
+        <tr>
+            <td>play(path:String):ngAudioObject</td>
+            <td>Shortcut to load a sound and play it right away. Not recommended for remote URLs as there will be a delay.</td>
+        </tr>
+        <tr>
+            <td>mute()</td>
+            <td>Shortcut to globally mute all sounds loaded this way. Global mute is from the sounds individual mute and can't be unmuted except globally.</td>
+        </tr>
+        <tr>
+            <td>unmute()</td>
+            <td>Globally unmutes all the sounds.</td>
+        </tr>
+    </table>
+</article>
+<article>
+    <h4>ngAudioObject Reference</h4>
     <p>ngAudioObject can be used to control a sound file. It can be attached to the
         <strong>$scope.</strong>
     </p>
@@ -40,7 +73,15 @@ angular.module('yourModule',['ngAudio'])
             <td>Plays the sound.</td>
         </tr>
         <tr>
-            <td>currentTime</td>
+            <td>pause()</td>
+            <td>Pauses the sound.</td>
+        </tr>
+        <tr>
+            <td>stop()</td>
+            <td>Restarts the sound. <em>alias restart</em></td>
+        </tr>
+        <tr>
+            <td>currentTime:number</td>
             <td>
                 <p>
                     Read - reads the current time of the sound in seconds.
@@ -49,7 +90,7 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
-            <td>volume</td>
+            <td>volume:number</td>
             <td>
                 <p>
                     Read - reads the volume of the sound from 0 - 1.
@@ -58,7 +99,7 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>progress:number</td>
             <td>
                 <p>
                     Read - returns the playthrough progress of the sound from 0 - 1.
@@ -66,5 +107,52 @@ angular.module('yourModule',['ngAudio'])
                 <p>Write - sets the current time of the of the sound as a percentage from 0 to 1.</p>
             </td>
         </tr>
+        <tr>
+            <td>muting:boolean</td>
+            <td>
+                <p>
+                    Read - whether or not the sound is muting.
+                </p>
+                <p>Write - set a boolean to mute or unmute the sound.</p>
+                <p>When a sound is muting, its will make no noise, but it can be played, be paused, and have its volume adjusted.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>remaining:number (read only)</td>
+            <td>
+                <p>
+                    Time remaining in seconds.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>audio: NativeHTMLAudio (read only)</td>
+            <td>
+                <p>
+                    Reference to the native audio file used by the object.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>canPlay:boolean (read only)</td>
+            <td>
+                <p>
+                    Is true if the sound is loaded enough to play. <em>This is not well supported in all browsers.</em>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>error:boolean (read only)</td>
+            <td>
+                <p>
+                    Is true if the sound could not be loaded.
+                </p>
+            </td>
+        </tr>
     </table>
+</article>
+<article>
+    <h3>
+    Use as a directive on buttons
+    </h3>
 </article>

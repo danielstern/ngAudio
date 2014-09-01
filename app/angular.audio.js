@@ -135,22 +135,16 @@ angular.module('ngAudio', [])
             $willPlay = true;
         }
 
-        // this.mute = function() {
-        //     $isMuting = true; 
-        //     this.muting = true;
-        // }
-
-        // this.unmute = function() {
-        //     $isMuting = false;
-        //     this.muting = false;
-        // }
-
         this.pause = function() {
             $willPause = true;
         }
 
         this.restart = function() {
             $willRestart = true;
+        }
+
+        this.stop = function() {
+            this.restart();
         }
 
         this.setVolume = function(volume) {
@@ -166,15 +160,11 @@ angular.module('ngAudio', [])
         cleverAudioFindingService.find(id)
             .then(function(nativeAudio) {
                 audio = nativeAudio;
-                // audio.addEventListener('progress',function(e){
-                    // console.log("some progress...",e);
-                // });
                 audio.addEventListener('canplay',function(e){
-                    // console.log("can play");
                     audioObject.canPlay = true;
                 })
             }, function(error) {
-                console.error("Couldn't load::", id);
+                console.warn("Couldn't load::", id);
                 audioObject.error = true;
             });
 
@@ -226,7 +216,6 @@ angular.module('ngAudio', [])
                 if (newValue == oldValue) {
                     return;
                 }
-                console.log('mutewatch');
                 audioObject.setMuting(newValue);
             }, true);
         }
