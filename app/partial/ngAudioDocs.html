@@ -1,0 +1,70 @@
+<h2>ngAudio Documentation</h2>
+<h3>Installation</h3>
+<p>Install the package (bower is the recommended way.)</p>
+<code><pre>bower install angular-audio --save</pre>
+</code>
+<p>Require the module in your project.</p>
+<code><pre>angular.module('yourModule',['ngAudio'])</pre>
+</code>
+
+<h3>Usage</h3>
+<p>Audio is loaded through the
+    <em>load</em>method. The load method returns an
+    <strong>ngAudioObject</strong>object.</p>
+
+<code>
+    <pre>
+angular.module('yourModule',['ngAudio'])
+.controller("yourController",function($scope,ngAudio){
+	$scope.sound = ngAudio.load("sounds/mySound.mp3"); // returns ngAudioObject
+})	</pre>
+</code>
+<article>
+    <h4>ngAudioObjectProperties</h4>
+    <p>ngAudioObject can be used to control a sound file. It can be attached to the
+        <strong>$scope.</strong>
+    </p>
+    <table class="table table-striped table-bordered table-condensed">
+        <tr>
+            <td>constructor(pathOrId:String)</td>
+            <td>Returns an audio object which automatically loads an object,
+                <ul>
+                    <li>which is found at the path specified</li>
+                    <li>or on the DOM in an audio element with an ID the same as specified</li>
+                </ul>
+
+            </td>
+        </tr>
+        <tr>
+            <td>play()</td>
+            <td>Plays the sound.</td>
+        </tr>
+        <tr>
+            <td>currentTime</td>
+            <td>
+                <p>
+                    Read - reads the current time of the sound in seconds.
+                </p>
+                <p>Write - sets the current time of the sound.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>volume</td>
+            <td>
+                <p>
+                    Read - reads the volume of the sound from 0 - 1.
+                </p>
+                <p>Write - sets the volume of the sound.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>progress</td>
+            <td>
+                <p>
+                    Read - returns the playthrough progress of the sound from 0 - 1.
+                </p>
+                <p>Write - sets the current time of the of the sound as a percentage from 0 to 1.</p>
+            </td>
+        </tr>
+    </table>
+</article>

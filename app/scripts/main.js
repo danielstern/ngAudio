@@ -4,7 +4,7 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
         $stateProvider
             .state("home", {
                 url: "/",
-                template:"OK"
+                templateUrl:"partial/ngAudioDocs.html"
             })
 
         //  .state('test',{
