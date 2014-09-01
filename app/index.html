@@ -21,12 +21,45 @@
 <body>
 
     <body ng-app=ngAudioDemo ng-controller=Demo>
-        <audio id='sword' src='audio/sword.mp3'></audio>
-        <!-- <button ng-audio="audio/laser.mp3">remote</button> -->
+        <!-- <ngAudio id='sword' src='audio/sword.mp3'></ngAudio> -->
+        <!-- <button ng-audio="audio/lid.mp3" volume=0.7 start=0.1>remote</button> -->
         <!-- <button ng-audio="sword">local</button> -->
         <div class='container'>
-            <div ng-repeat="audio in [audio1,audio2,audio3,audio4]">
-                <table class='table'>
+            <div ng-repeat="audio in audios">
+                <!-- <div class="input-group"> -->
+                <!-- <span class="input-group-addon"><i class="glyphicon glyphicon-cog"> </i> URL -->
+                <!-- </span> -->
+                <!-- <input type="text" class="form-control" disabled name="username" value="" ng-model='audio.src'> -->
+                <p>
+                    {{audio.src}}
+                </p>
+                <p ng-if=audio.error>
+                    Error playing this sound.
+                </p>
+                <div ng-if=!audio.error>
+                    <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
+                    <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
+                    <button class='btn btn-neutral' ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button>
+                </div>
+                <div>
+                    Current Time : {{audio.currentTime | number : 2}}
+                </div>
+                <div class='row'>
+                    <!-- <label>{{audio.progress | number : 2}}</label> -->
+                    <div class='col-md-8'>
+                        <input type=range min=0 max=1 step=0.01 ng-model='progress'>
+                    </div>
+                </div>
+                <!-- </div> -->
+
+                <!-- <div class="input-group" ng-repeat="param in [audio.volume,audio.">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-cog"></i>
+                    </span>
+                    <input type="range" class="form-control" disabled name="username" value="" ng-model='audio.src'>
+                </div> -->
+
+
+                <!-- <table class='table'>
                     <tr ng-if="audio.error">
                         <td>
                             <p>Error playing {{audio.src}}</p>
@@ -34,10 +67,11 @@
                     </tr>
                     <tr>
                         <td>
-                            name
-                        </td>
-                        <td>
-                            {{audio.src}}
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-cog"></i>
+                                </span>
+                                <input type="text" class="form-control" disabled name="username" value="" ng-model='audio.src'>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -55,28 +89,29 @@
                     <tr>
                         <td>progress</td>
                         <td>
-                            <label> {{audio.progress | number : 2}}</label><input type=range min=0 max=1 step=0.01 ng-model='audio.progress'>
+                            <label>{{audio.progress | number : 2}}</label>
+                            <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='audio.progress'>
                         </td>
                     </tr>
                     <tr>
                         <td>volume</td>
                         <td>
-                            <label> {{audio.volume | number : 2}}</label><input type=range min=0 max=1 step=0.01 ng-model='audio.volume'>
+                            <label for='volume'>{{audio.volume | number : 2}}</label>
+                            <input name='volume' type=range min=0 max=1 step=0.01 ng-model='audio.volume'>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <button ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
+                            <button class='btn btn-primary' ng-class="{'disabled':audio.error}" ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
                         </td>
                         <td>
-                            <button ng-click='audio.restart()'>restart</button>
+                            <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
                         </td>
                         <td>
-                            <button ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button>
-                            <!-- <button ng-click='audio.mute()'>mute</button> -->
+                            <button class='btn' ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button>
                         </td>
                     </tr>
-                </table>
+                </table> -->
             </div>
         </div>
     </body>
@@ -104,11 +139,11 @@
 <script>
 angular.module("ngAudioDemo", ['ngAudio'])
     .controller('Demo', function($scope, ngAudio) {
-        var audio = ngAudio.load('audio/laser.mp3');
-        var audio2 = ngAudio.load('audio/lid.mp3');
-        $scope.audio3 = ngAudio.load('audio/lidz.mp3');
-        $scope.audio4 = ngAudio.load('sword');
-        $scope.audio1 = audio;
-        $scope.audio2 = audio2;
+        $scope.audios = [
+            ngAudio.load('audio/laser.mp3'),
+            ngAudio.load('audio/lid.mp3'),
+            ngAudio.load('sword')
+
+        ]
     })
 </script>

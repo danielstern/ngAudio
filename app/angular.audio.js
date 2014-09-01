@@ -6,25 +6,44 @@ angular.module('ngAudio', [])
                 /**
               If used as an element, automatically convert to attribute form.
             **/
-                if (element[0].nodeName == 'NG-AUDIO') {
-                    var audio = angular.element(document.createElement('audio'));
-                    audio.attr('ng-audio');
+                // if (element[0].nodeName == 'NG-AUDIO') {
+                //     var audio = angular.element(document.createElement('audio'));
+                //     audio.attr('ng-audio');
 
-                    element.attr('id', '');
-                    for (var prop in attrs.$attr) {
-                        audio.attr(prop, attrs[prop]);
-                    }
+                //     element.attr('id', '');
+                //     for (var prop in attrs.$attr) {
+                //         audio.attr(prop, attrs[prop]);
+                //     }
 
-                    var el = $compile(audio)(scope);
-                    element.append(audio);
-                }
+                //     var el = $compile(audio)(scope);
+                //     element.append(audio);
+                // }
 
             },
-            controller: function($scope, $attrs, $element) {
+            controller: function($scope, $attrs, $element,$timeout) {
+
+                var audio = ngAudio.load($attrs.ngAudio);
+
+                // $scope.$watch(function(){
+                //     return audio.error;
+                // },function(){
+                //     if (audio.error) {
+                //         console.log("this audio has an error");                        
+                //     }
+                // })
 
                 $element.on('click', function(e) {
-                    ngAudio.play($attrs.ngAudio);
+                    audio.pause();
+                    audio.volume = $attrs.volume || audio.volume;
+                    audio.currentTime = $attrs.start || 0;
+                    // audio.currentTime = 0;
+                    
+                    $timeout(function(){
+                        audio.play();
+                    },5);
                 });
+
+
 
             },
         };
@@ -52,10 +71,12 @@ angular.module('ngAudio', [])
         var audio = new Audio();
 
         audio.addEventListener('error', function(e) {
+            // console.log('remote find error');
             deferred.reject();
         });
 
         audio.addEventListener('canplay', function(e) {
+            // console.log('remote find success',url);
             deferred.resolve(audio);
         })
 
@@ -120,6 +141,7 @@ angular.module('ngAudio', [])
         var audioObject = this;
         var $progressWatch;
         var $volumeWatch;
+        var $currentTimeWatch;
 
         var $willPlay = false;
         var $willPause = false;
@@ -151,8 +173,7 @@ angular.module('ngAudio', [])
         }
 
         this.setVolume = function(volume) {
-            // $volumeToSet = volume;
-            audio.volume = $volumeToSet;
+            $volumeToSet = volume;
         }
 
         cleverAudioFindingService.find(id)
@@ -165,9 +186,14 @@ angular.module('ngAudio', [])
 
 
         this.setProgress = function(progress) {
-            // audio.pause();
             if (audio.duration) {
                 audio.currentTime = audio.duration * progress;
+            }
+        }
+
+        this.setCurrentTime = function(currentTime) {
+            if (audio.duration) {
+                audio.currentTime = currentTime;
             }
         }
 
@@ -190,11 +216,21 @@ angular.module('ngAudio', [])
                 }
                 audioObject.setVolume(newValue);
             }, true);
+
+            $currentTimeWatch = $rootScope.$watch(function() {
+                return audioObject.currentTime;
+            }, function(newValue, oldValue) {
+                if (newValue == oldValue) {
+                    return;
+                }
+                audioObject.setCurrentTime(newValue);
+            }, true);
         }
 
         function $clearWatch() {
             if ($progressWatch) $progressWatch();
             if ($volumeWatch) $volumeWatch();
+            if ($currentTimeWatch) $currentTimeWatch();
         }
 
 
@@ -202,8 +238,10 @@ angular.module('ngAudio', [])
             $clearWatch();
             if (audio) {
 
-                if (!ngAudioGlobals.muting && $isMuting) {
-                    // audio.volume = audioObject.volume || audio.volume;
+                if ($isMuting || ngAudioGlobals.isMuting) {
+                    audio.volume = 0;
+                } else {
+                    audio.volume = audioObject.volume || 1;
                 }
 
                 if ($willPlay) {
@@ -223,7 +261,7 @@ angular.module('ngAudio', [])
                 }
 
                 if ($volumeToSet) {
-                  
+                    audio.volume = $volumeToSet;
                     $volumeToSet = undefined;
                 }
 
@@ -237,8 +275,8 @@ angular.module('ngAudio', [])
                 audioObject.paused = audio.paused;
 
 
-                if (ngAudioGlobals.muting || $isMuting) {
-                    audio.volume = 0;
+                if (!$isMuting && !ngAudioGlobals.isMuting) {
+                    audioObject.volume = audio.volume;
                 }
 
                 audioObject.audio = audio;
