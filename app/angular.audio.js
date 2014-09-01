@@ -122,6 +122,7 @@ angular.module('ngAudio', [])
         var $progressWatch;
         var $volumeWatch;
         var $currentTimeWatch;
+        var $muteWatch;
 
         var $willPlay = false;
         var $willPause = false;
@@ -134,15 +135,15 @@ angular.module('ngAudio', [])
             $willPlay = true;
         }
 
-        this.mute = function() {
-            $isMuting = true; 
-            this.muting = true;
-        }
+        // this.mute = function() {
+        //     $isMuting = true; 
+        //     this.muting = true;
+        // }
 
-        this.unmute = function() {
-            $isMuting = false;
-            this.muting = false;
-        }
+        // this.unmute = function() {
+        //     $isMuting = false;
+        //     this.muting = false;
+        // }
 
         this.pause = function() {
             $willPause = true;
@@ -154,6 +155,12 @@ angular.module('ngAudio', [])
 
         this.setVolume = function(volume) {
             $volumeToSet = volume;
+        }
+
+        this.setMuting = function(muting) {
+            if (muting === false) $isMuting = false;
+            if (muting === true) $isMuting = true;
+
         }
 
         cleverAudioFindingService.find(id)
@@ -212,12 +219,23 @@ angular.module('ngAudio', [])
                 }
                 audioObject.setCurrentTime(newValue);
             }, true);
+
+            $muteWatch = $rootScope.$watch(function() {
+                return audioObject.muting;
+            }, function(newValue, oldValue) {
+                if (newValue == oldValue) {
+                    return;
+                }
+                console.log('mutewatch');
+                audioObject.setMuting(newValue);
+            }, true);
         }
 
         function $clearWatch() {
             if ($progressWatch) $progressWatch();
             if ($volumeWatch) $volumeWatch();
             if ($currentTimeWatch) $currentTimeWatch();
+            if ($muteWatch) $muteWatch();
         }
 
 

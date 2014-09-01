@@ -13,7 +13,8 @@
 <div ng-if='!audio.error && audio.canPlay' class='form-group col-md-8 col-md-offset-4'>
     <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
     <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
-    <button class='btn btn-neutral' ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button>
+    <!-- <button class='btn btn-neutral' ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button> -->
+    <button class='btn btn-neutral' ng-click='audio.muting = !audio.muting'>{{audio.muting ? "Unmute" : "Mute" }}</button>
 </div>
 
 <form class='form-horizontal'>
