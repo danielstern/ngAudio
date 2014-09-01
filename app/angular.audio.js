@@ -3,48 +3,21 @@ angular.module('ngAudio', [])
         return {
             restrict: 'AEC',
             link: function(scope, element, attrs) {
-                /**
-              If used as an element, automatically convert to attribute form.
-            **/
-                // if (element[0].nodeName == 'NG-AUDIO') {
-                //     var audio = angular.element(document.createElement('audio'));
-                //     audio.attr('ng-audio');
-
-                //     element.attr('id', '');
-                //     for (var prop in attrs.$attr) {
-                //         audio.attr(prop, attrs[prop]);
-                //     }
-
-                //     var el = $compile(audio)(scope);
-                //     element.append(audio);
-                // }
-
-            },
-            controller: function($scope, $attrs, $element,$timeout) {
 
                 var audio = ngAudio.load($attrs.ngAudio);
-
-                // $scope.$watch(function(){
-                //     return audio.error;
-                // },function(){
-                //     if (audio.error) {
-                //         console.log("this audio has an error");                        
-                //     }
-                // })
+              
+            },
+            controller: function($scope, $attrs, $element,$timeout) {
 
                 $element.on('click', function(e) {
                     audio.pause();
                     audio.volume = $attrs.volume || audio.volume;
                     audio.currentTime = $attrs.start || 0;
-                    // audio.currentTime = 0;
                     
                     $timeout(function(){
                         audio.play();
                     },5);
                 });
-
-
-
             },
         };
     })
@@ -71,12 +44,10 @@ angular.module('ngAudio', [])
         var audio = new Audio();
 
         audio.addEventListener('error', function(e) {
-            // console.log('remote find error');
             deferred.reject();
         });
 
         audio.addEventListener('loadstart', function(e) {
-            // console.log('remote find success',url);
             deferred.resolve(audio);
         })
 
@@ -285,23 +256,23 @@ angular.module('ngAudio', [])
         var audio = new ngAudioObject(id);
         audio.play();
         return audio;
-    }
+    };
 
     this.load = function(id) {
         return new ngAudioObject(id);
-    }
+    };
 
     this.mute = function() {
         ngAudioGlobals.muting = true;
-    }
+    };
 
     this.unmute = function() {
         ngAudioGlobals.muting = false;
-    }
+    };
 
     this.toggleMute = function() {
         ngAudioGlobals.muting = !ngAudioGlobals.muting;
-    }
+    };
 
 
-})
+});
