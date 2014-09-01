@@ -6,7 +6,7 @@ The Angular Audio Module
 
 Total awesomeness for playing sounds. Project page here:
 
-[Angular Audio Docs](http://danielstern.github.io/ngAudio/)
+##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
 
 
 Release Notes v1.0
