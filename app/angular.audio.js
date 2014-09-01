@@ -94,6 +94,8 @@ angular.module('ngAudio', [])
     this.find = function(id) {
         var deferred = $q.defer();
 
+        id = id.replace('|','/');
+
         localAudioFindingService.find(id)
             .then(deferred.resolve, function() {
                 return remoteAudioFindingService.find(id)
@@ -113,6 +115,7 @@ angular.module('ngAudio', [])
     return function(id) {
 
         this.id = id;
+        this.safeId = id.replace('/','|'); 
 
         var audio = undefined;
         var audioObject = this;
@@ -132,7 +135,7 @@ angular.module('ngAudio', [])
         }
 
         this.mute = function() {
-            $isMuting = true;
+            $isMuting = true; 
             this.muting = true;
         }
 

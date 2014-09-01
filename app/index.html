@@ -21,105 +21,50 @@
 <body>
 
     <body ng-app=ngAudioDemo ng-controller=Demo class='container'>
+
+        <!-- Static navbar -->
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" ui-sref='home'>ngAudio</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li ui-sref-active='active'><a ui-sref='home'>Docs</a>
+                        </li>
+                        <li ui-sref-active='active'><a  ui-sref='audio'>Demo #1</a>
+                        </li>
+                        <li class="dropdown">
+                            <a ui-sref='audio' ui-sref-active='active' class="dropdown-toggle" data-toggle="dropdown">Sounds <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li ng-repeat='audio in audios' ui-sref-active="active"><a ui-sref='audio.detail({id:audio.safeId})'>{{audio.id}}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+            <!--/.container-fluid -->
+        </div>
+
         <!-- <ngAudio id='sword' src='audio/sword.mp3'></ngAudio> -->
         <!-- <button ng-audio="audio/lid.mp3" volume=0.7 start=0.1>remote</button> -->
         <!-- <button ng-audio="sword">local</button> -->
         <div class='jumbotron'>
-            <h2>ngAudio - the angular audio tool</h2>
+            <h1>ngAudio</h1>
+            <p>the angular audio tool</p>
         </div>
-        <div class='col-md-4'>
-            Hello
-        </div>
-        <div class='container'>
+        <div ui-view></div>
+        <!-- <div ui-view='main' class='col-md-12'></div> -->
+        <!-- <div ui-view='detail' class='col-md-12'></div> -->
+        <!-- <div class='col-md-10'>
             <div ng-repeat="audio in audios">
-                <div class='col-md-8'>
-                    <div class=col-md-offset-4>
-                        <p>
-                            {{audio.id}}
-                        </p>
-                        <p ng-if=audio.error>
-                            Error playing this sound.
-                        </p>
-                        <p ng-if=!audio.canPlay>
-                            Sound is loading...
-                        </p>
-                    </div>
-                    <div ng-if=!audio.error && audio.canPlay
-                        <div class='form-group col-md-8 col-md-offset-4'>
-                            <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
-                            <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
-                            <button class='btn btn-neutral' ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button>
-                        </div>
+                
 
-                        <form class='form-horizontal'>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="prependedtext">Current Time</label>
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Current Time</span>
-                                        <input class='form-control' type=number min=0 max=1 step=0.01 ng-model='audio.currentTime'>
-                                    </div>
-                                    <p class="help-block">Stuff about current time</p>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="prependedtext">Progress</label>
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Progress</span>
-                                        <!-- {{audio.progress * 100 | number : 0}}% -->
-                                        <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='audio.progress'>
-                                    </div>
-                                    <p class="help-block">Stuff...</p>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="prependedtext">Volume</label>
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Volume</span>
-                                        <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='audio.volume'>
-                                    </div>
-                                    <p class="help-block">Stuff...</p>
-                                </div>
-                            </div>
-                    </div>
-                    </form>
-                </div>
-                <div class='col-md-4' ng-if=!audio.error>
-                    <table class='table table-striped table-bordered table-condensed'>
-                        <tr>
-                            <td>
-                                src
-                            </td>
-                            <td>
-                                {{audio.src}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Current Time
-                            </td>
-                            <td>
-                                {{audio.currentTime | number : 2}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Duration</td>
-                            <td>{{audio.duration | number : 2}}</td>
-                        </tr>
-                        <tr>
-                            <td>Progress (%)</td>
-                            <td>{{audio.progress | number : 1}}</td>
-                        </tr>
-                        <tr>
-                            <td>Volume</td>
-                            <td>{{audio.volume | number : 1}}</td>
-                        </tr>
-                    </table>
-                </div>
             </div>
-        </div>
+        </div> -->
     </body>
 
 
@@ -129,9 +74,10 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="angular.audio.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
+    <script src="angular.audio.js"></script>
 
 
     <!-- build:js({app,.tmp}) scripts/main.js -->
@@ -143,17 +89,4 @@
 
 
 <script>
-angular.module("ngAudioDemo", ['ngAudio'])
-    .controller('Demo', function($scope, ngAudio) {
-        $scope.audios = [
-            ngAudio.load('audio/beer-pour-glass.mp3'),
-            ngAudio.load('audio/candy-bag-rustle.mp3'),
-            ngAudio.load('audio/falling-whistle.mp3'),
-            ngAudio.load('audio/ice-cubes-clink.mp3'),
-            ngAudio.load('audio/marker-writing.mp3'),
-            ngAudio.load('audio/magic-chime.mp3'),
-            ngAudio.load('audio/van-large-pass-by.mp3'),
-
-        ]
-    })
 </script>

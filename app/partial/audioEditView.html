@@ -1,0 +1,52 @@
+<div class=col-md-offset-4>
+    <h3>
+        {{audio.id}}
+    </h3>
+    <p ng-if=audio.error>
+        Error playing this sound.
+    </p>
+    <p ng-if=!audio.canPlay>
+        Sound is loading...
+    </p>
+</div>
+<div ng-if=!audio.error && audio.canPlay <div class='form-group col-md-8 col-md-offset-4'>
+    <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
+    <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
+    <button class='btn btn-neutral' ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button>
+</div>
+
+<form class='form-horizontal'>
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="prependedtext">Current Time</label>
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-addon">Current Time</span>
+                <input class='form-control' type=text ng-model='audio.currentTime'>
+            </div>
+            <p class="help-block">Stuff about current time</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="prependedtext">Progress</label>
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-addon">Progress</span>
+                <!-- {{audio.progress * 100 | number : 0}}% -->
+                <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='audio.progress'>
+            </div>
+            <p class="help-block">Stuff...</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="prependedtext">Volume</label>
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-addon">Volume</span>
+                <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='audio.volume'>
+            </div>
+            <p class="help-block">Stuff...</p>
+        </div>
+    </div>
+</form>
+
+<div class='hidden-sm' ng-include="'partial/audioTableView.html'"></div>
