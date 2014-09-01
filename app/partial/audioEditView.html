@@ -1,6 +1,7 @@
 <div class=col-md-offset-4>
     <h3>
         {{audio.id}}
+        <!-- {{audio}} -->
     </h3>
     <p ng-if=audio.error>
         Error playing this sound.
@@ -9,7 +10,7 @@
         Sound is loading...
     </p>
 </div>
-<div ng-if=!audio.error && audio.canPlay <div class='form-group col-md-8 col-md-offset-4'>
+<div ng-if='!audio.error && audio.canPlay' class='form-group col-md-8 col-md-offset-4'>
     <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
     <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
     <button class='btn btn-neutral' ng-click='audio.muting ? audio.unmute() : audio.mute()'>{{audio.muting ? "Unmute" : "Mute" }}</button>

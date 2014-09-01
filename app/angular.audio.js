@@ -269,7 +269,7 @@ angular.module('ngAudio', [])
                 audioObject.audio = audio;
             }
             $setWatch();
-        })
+        },1);
     }
 })
 
