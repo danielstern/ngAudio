@@ -1,6 +1,7 @@
 {
   "name": "angular-audio",
   "private": true,
+  "main":"app/angular.audio.js",
   "dependencies": {
     "bootstrap": "~3.2.0",
     "angular": "~1.2.23",
