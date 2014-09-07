@@ -1,278 +1,417 @@
-angular.module('ngAudio', [])
-    .directive('ngAudio', function($compile, $q, ngAudio) {
+'use strict';
+/* NG AUDIO MOD
+ @github: danielstern
+ License: PLEASE USE FOR EVIL*/
+
+var ngAudio = angular.module('ngAudio', []);
+ngAudio.directive('ngAudio', ['$compile', 'ngAudio', '$q', function($compile, ngAudio, $q) {
         return {
-            restrict: 'AEC',
-            link: function(scope, element, attrs) {
+            restrict: 'AE',
+            controller: ['$scope', '$attrs', '$element', function($scope, $attrs, $element) {
 
-                var audio = ngAudio.load($attrs.ngAudio);
-              
-            },
-            controller: function($scope, $attrs, $element,$timeout) {
+                    if ($element[0].nodeName == 'AUDIO') {
+                        return;
+                    }
 
-                $element.on('click', function(e) {
-                    audio.pause();
-                    audio.volume = $attrs.volume || audio.volume;
-                    audio.currentTime = $attrs.start || 0;
-                    
-                    $timeout(function(){
-                        audio.play();
-                    },5);
-                });
-            },
+                    if ($element[0].nodeName == 'NG-AUDIO') {
+
+                        var audio = angular.element(document.createElement('audio'));
+                        audio.attr('ng-audio');
+
+                        $element.attr('id', '');
+                        for (var attr in $attrs.$attr) {
+                            var attrName = attr;
+                            audio.attr(attrName, $attrs[attrName]);
+                        }
+
+                        var el = $compile(audio)($scope);
+                        $element.append(audio);
+                        return;
+                    }
+
+                    $element.on('click', function(e) {
+                        ngAudio.play($attrs.ngAudio);
+                    });
+                }]
         };
-    })
+    }]);
 
-.service('localAudioFindingService', function($q, $timeout) {
+ngAudio.service('ngAudioLoader', ['$q', function($q) {
+        var allSoundsLoaded = [];
 
-    this.find = function(id) {
-        var deferred = $q.defer();
-        var $sound = document.getElementById(id);
-        if ($sound) {
-            deferred.resolve($sound);
-        } else {
-            deferred.reject(id);
-        }
+        this.getAllSounds = function() {
+            return allSoundsLoaded;
+        };
+        this.loadAudio = function(str, audioObj) {
+            var r = $q.defer();
 
-        return deferred.promise;
-    }
-})
+            if (soundLoaded(str))
+                return;
 
-.service('remoteAudioFindingService', function($q) {
+            var $sound = document.getElementById(str);
+            if ($sound) {
+                audioObj.setSound($sound);
+                audioObj.src = $sound.getAttribute('src');
+                audioObj.defaultVolume = $sound.getAttribute('volume') || 0;
+                audioObj.startAt = $sound.getAttribute('startAt') || 0;
+                audioObj.defaultSong = $sound.hasAttribute('song');
+                audioObj.selector = str;
 
-    this.find = function(url) {
-        var deferred = $q.defer();
-        var audio = new Audio();
+                if (audioObj.defaultVolume) {
+                    audioObj.setVolume(audioObj.defaultVolume);
+                }
 
-        audio.addEventListener('error', function(e) {
-            deferred.reject();
-        });
+                if (audioObj.defaultSong) {
+                    audioObj.enableSong();
+                }
 
-        audio.addEventListener('loadstart', function(e) {
-            deferred.resolve(audio);
-        })
+                if (!soundLoaded(str))
+                    allSoundsLoaded.push(audioObj);
+                r.resolve(audioObj);
 
-        // bugfix for chrome...
-        setTimeout(function() {
-            audio.src = url;
-        }, 1);
 
-        return deferred.promise;
+            } else {
 
-    }
-})
+                _load(str)
+                        .then(function(res) {
+                            audioObj.setSound(res);
+                            audioObj.src = str;
+                            if (!soundLoaded(str))
+                                allSoundsLoaded.push(audioObj);
+                            r.resolve(audioObj);
+                        });
+            }
 
-.service('cleverAudioFindingService', function($q, localAudioFindingService, remoteAudioFindingService) {
-    this.find = function(id) {
-        var deferred = $q.defer();
-
-        id = id.replace('|','/');
-
-        localAudioFindingService.find(id)
-            .then(deferred.resolve, function() {
-                return remoteAudioFindingService.find(id)
-            })
-            .then(deferred.resolve, deferred.reject);
-
-        return deferred.promise;
-    }
-})
-
-.value('ngAudioGlobals', {
-    muting: false,
-    songmuting: false
-})
-
-.factory("ngAudioObject", function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
-    return function(id) {
-
-        this.id = id;
-        this.safeId = id.replace('/','|'); 
-
-        var audio = undefined;
-        var audioObject = this;
-        var $progressWatch;
-        var $volumeWatch;
-        var $currentTimeWatch;
-        var $muteWatch;
-
-        var $willPlay = false;
-        var $willPause = false;
-        var $willRestart = false;
-        var $volumeToSet = undefined;
-
-        var $isMuting = false;
-
-        this.play = function() {
-            $willPlay = true;
-        }
-
-        this.pause = function() {
-            $willPause = true;
-        }
-
-        this.restart = function() {
-            $willRestart = true;
-        }
-
-        this.stop = function() {
-            this.restart();
-        }
-
-        this.setVolume = function(volume) {
-            $volumeToSet = volume;
-        }
-
-        this.setMuting = function(muting) {
-            if (muting === false) $isMuting = false;
-            if (muting === true) $isMuting = true;
-
-        }
-
-        cleverAudioFindingService.find(id)
-            .then(function(nativeAudio) {
-                audio = nativeAudio;
-                audio.addEventListener('canplay',function(e){
-                    audioObject.canPlay = true;
-                })
-            }, function(error) {
-                console.warn("Couldn't load::", id);
-                audioObject.error = true;
+            audioObj.addListener(function(type, target) {
+                if (type == 'song-play') {
+                    var songs = getAllSongs();
+                    songs.forEach(function(song) {
+                        if (song.src != target.src)
+                            song.stop();
+                    });
+                }
             });
 
+            return r.promise;
 
-        this.setProgress = function(progress) {
-            if (audio.duration) {
-                audio.currentTime = audio.duration * progress;
+        };
+
+        var getAllSongs = function() {
+
+            // return _.filter(allSoundsLoaded, function(audioObj) {
+            return allSoundsLoaded.filter(function(audioObj) {
+                if (audioObj.isSong())
+                    return audioObj;
+            });
+        };
+
+        this.getAllSongs = getAllSongs;
+
+        function soundLoaded(id) {
+            return allSoundsLoaded.filter(function(audioObj) {
+                if (audioObj.src == id)
+                    return true;
+                if (audioObj.selector == id)
+                    return true;
+            })[0];
+        }
+
+        this.getAudio = function(id) {
+
+            var matchingSound = soundLoaded(id);
+            var audioObj = matchingSound || new AudioObject();
+
+            if (!matchingSound) {
+                audioObj.src = id;
+                audioObj.selector = id;
             }
-        }
+            this.loadAudio(id, audioObj);
+            return audioObj;
 
-        this.setCurrentTime = function(currentTime) {
-            if (audio.duration) {
-                audio.currentTime = currentTime;
+        };
+
+        function _load(uri) {
+            var k = $q.defer();
+            var audio = new Audio();
+
+            //   audio.addEventListener('canplaythrough', soundCanPlay, false); // It works!!
+            audio.src = uri;
+
+            var i = setInterval(function() {
+                if (audio.play) {
+                    soundCanPlay();
+                    clearInterval(i);
+                }
+            });
+
+            function soundCanPlay() {
+                k.resolve(audio);
             }
+            return k.promise;
         }
 
-        function $setWatch() {
+        var AudioObject = function() {
+            this.play = undefined;
+            this.stop = undefined;
+            this.sound = undefined;
+            var oldVolume = 1;
+            var song = false;
+            var o = this;
+            var muting = false;
+            var deferredPlay = false;
+            var listeners = [];
+            var songmuting = false;
+            var volume = 1;
 
-            $progressWatch = $rootScope.$watch(function() {
-                return audioObject.progress;
-            }, function(newValue, oldValue) {
-                if (newValue == oldValue) {
+            this.getVolume = function() {
+                return this.sound.volume;
+            };
+
+            this.addListener = function(li) {
+                listeners.push(li);
+            };
+
+            this.setVolume = function(vol) {
+                this.sound.volume = vol;
+            };
+
+            this.toggleMute = function() {
+                (muting) ? this.unmute() : this.mute();
+            };
+
+            this.mute = function() {
+                muting = true;
+                oldVolume = volume;
+                volume = 0;
+                this.setVolume(volume);
+            };
+
+            this.muteSong = function() {
+                songmuting = true;
+                oldVolume = volume;
+                volume = 0;
+                this.setVolume(volume);
+            };
+
+            this.unmuteSong = function() {
+                songmuting = false;
+                volume = oldVolume || 1;
+                this.setVolume(volume);
+            };
+
+            this.unmute = function() {
+                muting = false;
+                volume = oldVolume || 1;
+                if (this.isSong() && songmuting)
+                    return;
+                this.setVolume(volume);
+            };
+
+            this.setVolume = function(vol) {
+                volume = vol;
+                try {
+
+                    this.sound.volume = vol;
+                } catch (e) {
+                    console.warn("sound edit error.");
+                }
+            };
+
+
+            this.play = function(_sound) {
+                var sound = _sound || this.sound;
+                if (!sound) {
+                    deferredPlay = true;
                     return;
                 }
-                audioObject.setProgress(newValue);
-            }, true);
+                console.log("Playing", this);
+                deferredPlay = false;
 
-            $volumeWatch = $rootScope.$watch(function() {
-                return audioObject.volume;
-            }, function(newValue, oldValue) {
-                if (newValue == oldValue) {
+                if (muting)
                     return;
-                }
-                audioObject.setVolume(newValue);
-            }, true);
+                //if (this.isSong() && songmuting) return;
 
-            $currentTimeWatch = $rootScope.$watch(function() {
-                return audioObject.currentTime;
-            }, function(newValue, oldValue) {
-                if (newValue == oldValue) {
+                if (!this.isSong())
+                    this.stop();
+
+                if (this.startAt && sound.currentTime < this.startAt) {
+                    sound.currentTime = Number(this.startAt);
+                }
+
+                if (song) {
+                    listeners.forEach(function(li) {
+                        li('song-play', o);
+                    });
+                }
+
+                //if (this.isSong() && songmuting) return;
+                this.setVolume(volume);
+                if (songmuting)
                     return;
-                }
-                audioObject.setCurrentTime(newValue);
-            }, true);
+                sound.play();
+            };
 
-            $muteWatch = $rootScope.$watch(function() {
-                return audioObject.muting;
-            }, function(newValue, oldValue) {
-                if (newValue == oldValue) {
+            var i;
+
+            this.stop = function() {
+                //if (!this.sound || !this.sound.play) return;
+                this.pause();
+                if (this.sound && this.sound.currentTime)
+                    this.sound.currentTime = 0;
+            };
+
+            this.pause = function() {
+                if (!this.sound)
                     return;
+                this.sound.pause();
+            };
+
+            this.setSound = function(_sound) {
+                o.sound = _sound;
+                o.handleDeffered(_sound);
+            };
+
+            this.handleDeffered = function(_sound) {
+                if (deferredPlay) {
+                    this.play(_sound);
                 }
-                audioObject.setMuting(newValue);
-            }, true);
-        }
-
-        function $clearWatch() {
-            if ($progressWatch) $progressWatch();
-            if ($volumeWatch) $volumeWatch();
-            if ($currentTimeWatch) $currentTimeWatch();
-            if ($muteWatch) $muteWatch();
-        }
+            };
 
 
-        $interval(function() {
-            $clearWatch();
-            if (audio) {
+            this.enableSong = function() {
+                song = true;
+                this.song = true;
+            };
 
-                if ($isMuting || ngAudioGlobals.isMuting) {
-                    audio.volume = 0;
-                } else {
-                    audio.volume = audioObject.volume || 1;
-                }
+            this.isSong = function() {
+                return song;
+            };
 
-                if ($willPlay) {
-                    audio.play();
-                    $willPlay = false;
-                }
-
-                if ($willRestart) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    $willRestart = false;
-                }
-
-                if ($willPause) {
-                    audio.pause();
-                    $willPause = false;
-                }
-
-                if ($volumeToSet) {
-                    audio.volume = $volumeToSet;
-                    $volumeToSet = undefined;
-                }
+        };
 
 
+    }]);
 
-                audioObject.currentTime = audio.currentTime;
-                audioObject.duration = audio.duration;
-                audioObject.remaining = audio.duration - audio.currentTime;
-                audioObject.progress = audio.currentTime / audio.duration;
-                audioObject.src = audio.src;
-                audioObject.paused = audio.paused;
+/* Service for use inside code */
+ngAudio.service('ngAudio', ['$q', 'ngAudioLoader', function($q, ngAudioLoader) {
+        var a = this,
+                muting = false,
+                songmuting = false,
+                l = ngAudioLoader;
 
-
-                if (!$isMuting && !ngAudioGlobals.isMuting) {
-                    audioObject.volume = audio.volume;
-                }
-
-                audioObject.audio = audio;
+        function eachify(arg) {
+            if (!arg instanceof Array) {
+                arg = [arg];
             }
-            $setWatch();
-        },1);
-    }
-})
 
-.service('ngAudio', function(ngAudioObject, ngAudioGlobals) {
-    this.play = function(id) {
-        var audio = new ngAudioObject(id);
-        audio.play();
-        return audio;
-    };
-
-    this.load = function(id) {
-        return new ngAudioObject(id);
-    };
-
-    this.mute = function() {
-        ngAudioGlobals.muting = true;
-    };
-
-    this.unmute = function() {
-        ngAudioGlobals.muting = false;
-    };
-
-    this.toggleMute = function() {
-        ngAudioGlobals.muting = !ngAudioGlobals.muting;
-    };
+            return arg;
+        }
 
 
-});
+        this.play = function(id) {
+            if (muting)
+                return;
+
+            var audioObj = l.getAudio(id);
+            audioObj.play();
+
+            if (songmuting && audioObj.isSong())
+                audioObj.muteSong();
+        };
+
+        this.getAllSongs = l.getAllSongs;
+
+        this.isMusic = function(ids) {
+
+            var eachifiedIds = eachify(ids);
+
+            eachify(ids).forEach(function(id) {
+                var audioObj = l.getAudio(id);
+                audioObj.enableSong();
+            });
+        };
+
+        this.muteAll = function() {
+
+            l.getAllSounds().forEach(function(audioObj) {
+                audioObj.mute();
+            });
+
+            muting = true;
+        };
+
+        this.unmuteAll = function() {
+            l.getAllSounds().forEach(function(audioObj) {
+                audioObj.unmute();
+            });
+            muting = false;
+        };
+
+        this.stopAll = function() {
+            l.getAllSounds().forEach(function(audioObj) {
+                audioObj.stop();
+            });
+        };
+
+        this.toggleMuteAllSongs = function() {
+            songmuting = !songmuting;
+            var allSongs = l.getAllSongs();
+
+            if (songmuting) {
+                allSongs.forEach(function(audioObj) {
+                    audioObj.muteSong();
+                });
+            } else {
+                allSongs.forEach(function(audioObj) {
+                    audioObj.unmuteSong();
+                });
+            }
+        };
+
+        this.toggleMuteAll = function() {
+            muting ? a.unmuteAll() : a.muteAll();
+        };
+
+        this.toggleMute = function(ids) {
+
+            eachify(ids).forEach(function(id) {
+                var audioObj = l.getAudio(id);
+                audioObj.toggleMute();
+            });
+        };
+
+        this.mute = function(ids) {
+
+            eachify(ids).forEach(function(id) {
+                var audioObj = getAudio(id);
+                audioObj.mute();
+            });
+        };
+
+
+        this.unmute = function(ids) {
+
+            eachify(ids).forEach(function(id) {
+                var audioObj = getAudio(id);
+                audioObj.unmute();
+            });
+        };
+
+
+        this.getSoundVolume = function(id) {
+            var $sound = l.getAudio(id);
+            return $sound.getVolume();
+        };
+
+        this.setSoundVolume = function(id, vol) {
+            var $sound = l.getAudio(id);
+            $sound.setVolume(vol);
+        };
+
+        this.stop = function(ids) {
+            eachify(ids).forEach(function(id) {
+                var $sound = l.getAudio(id);
+                $sound.stop();
+            });
+        };
+    }]);
