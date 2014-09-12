@@ -1,5 +1,5 @@
 angular.module('ngAudio', [])
-    .directive('ngAudio', function($compile, $q, ngAudio) {
+    .directive('ngAudio', ['$compile','$q','ngAudio',function($compile, $q, ngAudio) {
         return {
             restrict: 'AEC',
             link: function(scope, element, attrs) {
@@ -18,11 +18,11 @@ angular.module('ngAudio', [])
                         audio.play();
                     },5);
                 });
-            },
+            }
         };
-    })
+    }])
 
-.service('localAudioFindingService', function($q, $timeout) {
+.service('localAudioFindingService',['$q','$timeout', function($q, $timeout) {
 
     this.find = function(id) {
         var deferred = $q.defer();
@@ -35,9 +35,9 @@ angular.module('ngAudio', [])
 
         return deferred.promise;
     }
-})
+}])
 
-.service('remoteAudioFindingService', function($q) {
+.service('remoteAudioFindingService',['$q', function($q) {
 
     this.find = function(url) {
         var deferred = $q.defer();
@@ -49,7 +49,7 @@ angular.module('ngAudio', [])
 
         audio.addEventListener('loadstart', function(e) {
             deferred.resolve(audio);
-        })
+        });
 
         // bugfix for chrome...
         setTimeout(function() {
@@ -59,9 +59,9 @@ angular.module('ngAudio', [])
         return deferred.promise;
 
     }
-})
+}])
 
-.service('cleverAudioFindingService', function($q, localAudioFindingService, remoteAudioFindingService) {
+.service('cleverAudioFindingService', ['$q', 'localAudioFindingService', 'remoteAudioFindingService',function($q, localAudioFindingService, remoteAudioFindingService) {
     this.find = function(id) {
         var deferred = $q.defer();
 
@@ -75,14 +75,14 @@ angular.module('ngAudio', [])
 
         return deferred.promise;
     }
-})
+}])
 
 .value('ngAudioGlobals', {
     muting: false,
     songmuting: false
 })
 
-.factory("ngAudioObject", function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
+.factory("ngAudioObject", ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals',function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
     return function(id) {
 
         this.id = id;
@@ -104,29 +104,29 @@ angular.module('ngAudio', [])
 
         this.play = function() {
             $willPlay = true;
-        }
+        };
 
         this.pause = function() {
             $willPause = true;
-        }
+        };
 
         this.restart = function() {
             $willRestart = true;
-        }
+        };
 
         this.stop = function() {
             this.restart();
-        }
+        };
 
         this.setVolume = function(volume) {
             $volumeToSet = volume;
-        }
+        };
 
         this.setMuting = function(muting) {
             if (muting === false) $isMuting = false;
             if (muting === true) $isMuting = true;
 
-        }
+        };
 
         cleverAudioFindingService.find(id)
             .then(function(nativeAudio) {
@@ -144,13 +144,13 @@ angular.module('ngAudio', [])
             if (audio.duration) {
                 audio.currentTime = audio.duration * progress;
             }
-        }
+        };
 
         this.setCurrentTime = function(currentTime) {
             if (audio.duration) {
                 audio.currentTime = currentTime;
             }
-        }
+        };
 
         function $setWatch() {
 
@@ -249,9 +249,9 @@ angular.module('ngAudio', [])
             $setWatch();
         },1);
     }
-})
+}])
 
-.service('ngAudio', function(ngAudioObject, ngAudioGlobals) {
+.service('ngAudio', ['ngAudioObject', 'ngAudioGlobals',function(ngAudioObject, ngAudioGlobals) {
     this.play = function(id) {
         var audio = new ngAudioObject(id);
         audio.play();
@@ -275,4 +275,5 @@ angular.module('ngAudio', [])
     };
 
 
-});
+}]);
+
