@@ -4,7 +4,7 @@ angular.module('ngAudio', [])
             restrict: 'AEC',
             link: function(scope, element, attrs) {
 
-                var audio = ngAudio.load($attrs.ngAudio);
+                var audio = ngAudio.load(attrs.ngAudio);
               
             },
             controller: function($scope, $attrs, $element,$timeout) {
