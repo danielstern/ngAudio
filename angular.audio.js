@@ -4,10 +4,12 @@ angular.module('ngAudio', [])
             restrict: 'AEC',
             link: function(scope, element, attrs) {
 
-                var audio = ngAudio.load(attrs.ngAudio);
+
               
             },
             controller: function($scope, $attrs, $element,$timeout) {
+                
+                var audio = ngAudio.load($attrs.ngAudio);
 
                 $element.on('click', function(e) {
                     audio.pause();
