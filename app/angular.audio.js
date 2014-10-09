@@ -143,7 +143,7 @@ angular.module('ngAudio', [])
 
 
         this.setProgress = function(progress) {
-            if (audio.duration) {
+            if (audio && audio.duration) {
                 audio.currentTime = audio.duration * progress;
             }
         };
@@ -167,7 +167,7 @@ angular.module('ngAudio', [])
 
                 console.log("setting current time...",newValue.currentTime);
 
-                // audioObject.setProgress(newValue);
+                audioObject.setProgress(newValue.currentTime);
                 // audioObject.setVolume(newValue.volume);
                 // audioObject.setCurrentTime(newValue.currentTime);
                 // audioObject.setMuting(newValue);
