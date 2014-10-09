@@ -149,26 +149,29 @@ angular.module('ngAudio', [])
         };
 
         this.setCurrentTime = function(currentTime) {
-            if (audio.duration) {
+            if (audio && audio.duration) {
                 audio.currentTime = currentTime;
             }
         };
 
         function $setWatch() {
            $audioWatch = $rootScope.$watch(function() {
-                // return audioObject;
+                return {
+                    volume:audioObject.volume,
+                    currentTime:audioObject.currentTime
+                };
             }, function(newValue, oldValue) {
                 if (newValue == oldValue) {
                     return;
                 }
-                if ($noWatch) {
-                    return;
-                }
+
+                console.log("setting current time...",newValue.currentTime);
+
                 // audioObject.setProgress(newValue);
-                // audioObject.setVolume(newValue);
-                // audioObject.setCurrentTime(newValue);
+                // audioObject.setVolume(newValue.volume);
+                // audioObject.setCurrentTime(newValue.currentTime);
                 // audioObject.setMuting(newValue);
-            }, true); 
+            },true); 
         }
            
 
