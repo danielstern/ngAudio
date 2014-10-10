@@ -20,11 +20,6 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
                 }
             })
 
-        //  .state('test',{
-        //  		url:"/test",
-        //  		template:"TEST"
-        //  })
-
         .state('docs', {
             url: "/docs",
             templateUrl: "partial/ngAudioDocs.html",
@@ -44,7 +39,6 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
             url: "/:id",
             templateUrl: "partial/audioEditView.html",
             controller: function($stateParams, $scope, ngAudio,songRemember) {
-                console.log("controller init...");
                 var url = $stateParams.id;
 
                 if (songRemember[url]) {
