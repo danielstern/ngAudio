@@ -13,9 +13,10 @@ angular.module('ngAudio', [])
         controller: function($scope, $attrs, $element, $timeout) {
 
             var audio = ngAudio.load($attrs.ngAudio);
+            audio.unbind();
+            
             $element.on('click', function() {
                 audio.pause();
-                audio.unbind();
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
