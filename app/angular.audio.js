@@ -255,8 +255,10 @@ angular.module('ngAudio', [])
                     audioObject.duration = audio.duration;
                     audioObject.remaining = audio.duration - audio.currentTime;
                     audioObject.progress = audio.currentTime / audio.duration;
-                    audioObject.src = audio.src;
                     audioObject.paused = audio.paused;
+                    audioObject.src = audio.src;
+                } else {
+                    audioObject.paused = true;
                 }
 
 
