@@ -5,8 +5,16 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
             .state("home", {
                 url: "/",
                 templateUrl: "partial/home.html",
-                controller: function($scope, ngAudio) {
-                    $scope.audio = ngAudio.load('audio/song.mp3');
+                controller: function($scope, ngAudio, songRemember) {
+                    if (songRemember.audio) {
+                        $scope.audio = songRemember.audio;
+                    } else {
+                        $scope.audio = ngAudio.load('audio/danielstern_robothichhiker.mp3');
+                        $scope.audio.volume = 0.8;
+                        songRemember.audio = $scope.audio;
+
+                        
+                    }
                 }
             })
 
@@ -45,6 +53,7 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
 
 
     })
+.value("songRemember",{})
     .controller('Demo', function($scope, ngAudio) {
         $scope.audios = [
             ngAudio.load('audio/beer-pour-glass.mp3'),
