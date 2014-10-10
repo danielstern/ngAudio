@@ -6,7 +6,7 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
                 url: "/",
                 templateUrl: "partial/home.html",
                 controller: function($scope, ngAudio, songRemember) {
-                    var url = 'audio/danielstern_robothichhiker.mp3';
+                    var url = 'audio/song.mp3';
                     
                     if (songRemember[url]) {
                         $scope.audio = songRemember[url];
