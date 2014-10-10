@@ -5,15 +5,20 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
             .state("home", {
                 url: "/",
                 templateUrl: "partial/home.html",
-                controller: function($scope, ngAudio) {
-                    $scope.audio = ngAudio.load('audio/song.mp3');
+                controller: function($scope, ngAudio, songRemember) {
+                    var url = 'audio/danielstern_robothichhiker.mp3';
+                    
+                    if (songRemember[url]) {
+                        $scope.audio = songRemember[url];
+                    } else {
+                        $scope.audio = ngAudio.load(url);
+                        $scope.audio.volume = 0.8;
+                        songRemember[url] = $scope.audio;
+
+                        
+                    }
                 }
             })
-
-        //  .state('test',{
-        //  		url:"/test",
-        //  		template:"TEST"
-        //  })
 
         .state('docs', {
             url: "/docs",
@@ -33,9 +38,16 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
         .state('audio.detail', {
             url: "/:id",
             templateUrl: "partial/audioEditView.html",
-            controller: function($stateParams, $scope, ngAudio) {
-                console.log("controller init...");
-                $scope.audio = ngAudio.load($stateParams.id);
+            controller: function($stateParams, $scope, ngAudio,songRemember) {
+                var url = $stateParams.id;
+
+                if (songRemember[url]) {
+                    $scope.audio = songRemember[url];
+                } else {
+                    $scope.audio = ngAudio.load(url);
+                    $scope.audio.volume = 0.8;
+                    songRemember[url] = $scope.audio;                    
+                }
             }
         })
 
@@ -45,6 +57,7 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
 
 
     })
+.value("songRemember",{})
     .controller('Demo', function($scope, ngAudio) {
         $scope.audios = [
             ngAudio.load('audio/beer-pour-glass.mp3'),

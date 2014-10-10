@@ -16,20 +16,20 @@
 <p>Audio is loaded through the
     <em>load</em>method of the
     <strong>ngAudio service</strong>. The load method returns an
-    <strong>ngAudioObject</strong>object.</p>
+    <strong>NgAudioObject</strong>object.</p>
 
 <code>
     <pre>
 angular.module('yourModule',['ngAudio'])
 .controller("yourController",function($scope,ngAudio){
-    $scope.sound = ngAudio.load("sounds/mySound.mp3"); // returns ngAudioObject
+    $scope.sound = ngAudio.load("sounds/mySound.mp3"); // returns NgAudioObject
 })  </pre>
 </code>
 <article>
     <h4>ngAudio Service Reference</h4>
     <table class="table table-striped table-bordered table-condensed">
         <tr>
-            <td>load(path:String):ngAudioObject</td>
+            <td>load(path:String):NgAudioObject</td>
             <td>
                 <p>
                     Takes a string and returns an audio object. The audio object can be used before the sound is loaded.
@@ -40,7 +40,7 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
-            <td>play(path:String):ngAudioObject</td>
+            <td>play(path:String):NgAudioObject</td>
             <td>Shortcut to load a sound and play it right away. Not recommended for remote URLs as there will be a delay.</td>
         </tr>
         <tr>
@@ -54,8 +54,8 @@ angular.module('yourModule',['ngAudio'])
     </table>
 </article>
 <article>
-    <h4>ngAudioObject Reference</h4>
-    <p>ngAudioObject can be used to control a sound file. It can be attached to the
+    <h4>NgAudioObject Reference</h4>
+    <p>NgAudioObject can be used to control a sound file. It can be attached to the
         <strong>$scope.</strong>
     </p>
     <table class="table table-striped table-bordered table-condensed">
@@ -81,6 +81,17 @@ angular.module('yourModule',['ngAudio'])
             <td>stop()</td>
             <td>Restarts the sound.
                 <em>alias restart</em>
+            </td>
+        </tr>
+        <tr>
+            <td>unbind()</td>
+            <td><p>
+                
+            Removes all the listeners from the audio object, improving performance, but disabling most read functionality. 
+            </p>
+            <p>
+                For example, setting progress and currentTime will still work, but reading them will not return the correct value.
+            </p>
             </td>
         </tr>
         <tr>
