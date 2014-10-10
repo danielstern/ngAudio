@@ -9,6 +9,8 @@ Total awesomeness for playing sounds. Project page here:
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
 
 Release Notes v1.2
+-------
+
 - added unbind() which improves performance but loses read functionality
 - reduced file size
 - reduced interval cycle
