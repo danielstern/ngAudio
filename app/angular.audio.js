@@ -89,6 +89,8 @@ angular.module('ngAudio', [])
 .factory("ngAudioObject", ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals', function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
     return function(id) {
 
+        var PERFORMANCE_MODE = true;
+
         this.id = id;
         this.safeId = id.replace('/', '|');
 
@@ -158,17 +160,29 @@ angular.module('ngAudio', [])
            $audioWatch = $rootScope.$watch(function() {
                 return {
                     volume:audioObject.volume,
-                    currentTime:audioObject.currentTime
+                    currentTime:audioObject.currentTime,
+                    progress:audioObject.progress
                 };
             }, function(newValue, oldValue) {
                 if (newValue == oldValue) {
                     return;
                 }
 
-                console.log("setting current time...",newValue.currentTime);
+                // console.log("setting current time...",newValue);
 
-                audioObject.setProgress(newValue.currentTime);
-                // audioObject.setVolume(newValue.volume);
+                // audioObject.setProgress(newValue.currentTime);
+
+                if (newValue.currentTime !== oldValue.currentTime) {
+                    audioObject.setCurrentTime(newValue.currentTime);
+                }
+
+                if (newValue.progress !== oldValue.progress) {
+                    // console.log("Progress changed...");
+                    audioObject.setProgress(newValue.progress);
+                }
+                if (newValue.volume !== oldValue.volume) {
+                    audioObject.setVolume(newValue.volume);
+                }
                 // audioObject.setCurrentTime(newValue.currentTime);
                 // audioObject.setMuting(newValue);
             },true); 
@@ -236,12 +250,15 @@ angular.module('ngAudio', [])
                     $volumeToSet = undefined;
                 }
 
-                audioObject.currentTime = audio.currentTime;
-                audioObject.duration = audio.duration;
-                audioObject.remaining = audio.duration - audio.currentTime;
-                audioObject.progress = audio.currentTime / audio.duration;
-                audioObject.src = audio.src;
-                audioObject.paused = audio.paused;
+                if (!PERFORMANCE_MODE) {
+                    audioObject.currentTime = audio.currentTime;
+                    audioObject.duration = audio.duration;
+                    audioObject.remaining = audio.duration - audio.currentTime;
+                    audioObject.progress = audio.currentTime / audio.duration;
+                    audioObject.src = audio.src;
+                    audioObject.paused = audio.paused;
+                }
+
 
 
                 if (!$isMuting && !ngAudioGlobals.isMuting) {
