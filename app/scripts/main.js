@@ -6,12 +6,14 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
                 url: "/",
                 templateUrl: "partial/home.html",
                 controller: function($scope, ngAudio, songRemember) {
-                    if (songRemember.audio) {
-                        $scope.audio = songRemember.audio;
+                    var url = 'audio/danielstern_robothichhiker.mp3';
+                    
+                    if (songRemember[url]) {
+                        $scope.audio = songRemember[url];
                     } else {
-                        $scope.audio = ngAudio.load('audio/danielstern_robothichhiker.mp3');
+                        $scope.audio = ngAudio.load(url);
                         $scope.audio.volume = 0.8;
-                        songRemember.audio = $scope.audio;
+                        songRemember[url] = $scope.audio;
 
                         
                     }
@@ -41,9 +43,17 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
         .state('audio.detail', {
             url: "/:id",
             templateUrl: "partial/audioEditView.html",
-            controller: function($stateParams, $scope, ngAudio) {
+            controller: function($stateParams, $scope, ngAudio,songRemember) {
                 console.log("controller init...");
-                $scope.audio = ngAudio.load($stateParams.id);
+                var url = $stateParams.id;
+
+                if (songRemember[url]) {
+                    $scope.audio = songRemember[url];
+                } else {
+                    $scope.audio = ngAudio.load(url);
+                    $scope.audio.volume = 0.8;
+                    songRemember[url] = $scope.audio;                    
+                }
             }
         })
 
