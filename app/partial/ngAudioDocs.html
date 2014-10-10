@@ -84,6 +84,17 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
+            <td>unbind()</td>
+            <td><p>
+                
+            Removes all the listeners from the audio object, improving performance, but disabling most read functionality. 
+            </p>
+            <p>
+                For example, setting progress and currentTime will still work, but reading them will not return the correct value.
+            </p>
+            </td>
+        </tr>
+        <tr>
             <td>currentTime:number</td>
             <td>
                 <p>

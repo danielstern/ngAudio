@@ -1,21 +1,23 @@
+'use strict';
 angular.module('ngAudio', [])
-
 .directive('ngAudio', ['$compile', '$q', 'ngAudio', function($compile, $q, ngAudio) {
     return {
         restrict: 'AEC',
         scope: {
-            volume: "=",
-            start: "=",
-            currentTime: "=",
-            loop: "="
+            volume: '=',
+            start: '=',
+            currentTime: '=',
+            loop: '='
         },
         controller: function($scope, $attrs, $element, $timeout) {
 
             var audio = ngAudio.load($attrs.ngAudio);
             $element.on('click', function(e) {
                 audio.pause();
-                console.log("Volume?",$scope.volume)
+                audio.unbind();
+                console.log('Volume?', $scope.volume)
                 audio.volume = $scope.volume || audio.volume;
+                audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
 
                 $timeout(function() {
@@ -86,27 +88,27 @@ angular.module('ngAudio', [])
     songmuting: false
 })
 
-.factory("ngAudioObject", ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals', function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
+.factory('ngAudioObject', ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals', function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
     return function(id) {
 
-        var PERFORMANCE_MODE = true;
+        var $audioWatch,
+            $willPlay = false,
+            $willPause = false,
+            $willRestart = false,
+            $volumeToSet = undefined,
+            $isMuting = false,
+            $observeProperties = false,
+            audio = undefined,
+            audioObject = this;
 
         this.id = id;
         this.safeId = id.replace('/', '|');
 
 
-        var audio = undefined;
-        var audioObject = this;
 
-
-        var $noWatch = true;
-        var $audioWatch;
-        var $willPlay = false;
-        var $willPause = false;
-        var $willRestart = false;
-        var $volumeToSet = undefined;
-        var $isMuting = false;
-
+        this.unbind = function() {
+            $observeProperties = true;
+        }
 
         this.play = function() {
             $willPlay = true;
@@ -132,18 +134,6 @@ angular.module('ngAudio', [])
             $isMuting = muting;
         };
 
-        cleverAudioFindingService.find(id)
-            .then(function(nativeAudio) {
-                audio = nativeAudio;
-                audio.addEventListener('canplay', function(e) {
-                    audioObject.canPlay = true;
-                })
-            }, function(error) {
-                console.warn("Couldn't load::", id);
-                audioObject.error = true;
-            });
-
-
         this.setProgress = function(progress) {
             if (audio && audio.duration) {
                 audio.currentTime = audio.duration * progress;
@@ -157,65 +147,36 @@ angular.module('ngAudio', [])
         };
 
         function $setWatch() {
-           $audioWatch = $rootScope.$watch(function() {
+            $audioWatch = $rootScope.$watch(function() {
                 return {
-                    volume:audioObject.volume,
-                    currentTime:audioObject.currentTime,
-                    progress:audioObject.progress
+                    volume: audioObject.volume,
+                    currentTime: audioObject.currentTime,
+                    progress: audioObject.progress
                 };
             }, function(newValue, oldValue) {
-                if (newValue == oldValue) {
-                    return;
-                }
-
-                // console.log("setting current time...",newValue);
-
-                // audioObject.setProgress(newValue.currentTime);
-
                 if (newValue.currentTime !== oldValue.currentTime) {
                     audioObject.setCurrentTime(newValue.currentTime);
                 }
 
                 if (newValue.progress !== oldValue.progress) {
-                    // console.log("Progress changed...");
                     audioObject.setProgress(newValue.progress);
                 }
                 if (newValue.volume !== oldValue.volume) {
                     audioObject.setVolume(newValue.volume);
                 }
-                // audioObject.setCurrentTime(newValue.currentTime);
-                // audioObject.setMuting(newValue);
-            },true); 
+            }, true);
         }
-           
 
-            // $rootScope.$watch(function() {
-            //     return audioObject.volume;
-            // }, function(newValue, oldValue) {
-            //     if (newValue == oldValue) {
-            //         return;
-            //     }
-            //     audioObject.setVolume(newValue);
-            // }, true);
+        cleverAudioFindingService.find(id)
+            .then(function(nativeAudio) {
+                audio = nativeAudio;
+                audio.addEventListener('canplay', function(e) {
+                    audioObject.canPlay = true;
+                })
+            }, function(error) {
+                audioObject.error = true;
+            });
 
-          // $rootScope.$watch(function() {
-          //       return audioObject.currentTime;
-          //   }, function(newValue, oldValue) {
-          //       if (newValue == oldValue) {
-          //           return;
-          //       }
-          //       console.log("setting current time")
-          //       audioObject.setCurrentTime(newValue);
-          //   }, true);
-
-          //   $rootScope.$watch(function() {
-          //       return audioObject.muting;
-          //   }, function(newValue, oldValue) {
-          //       if (newValue == oldValue) {
-          //           return;
-          //       }
-          //       audioObject.setMuting(newValue);
-          //   }, true);
 
         $interval(function() {
             if ($audioWatch) {
@@ -250,18 +211,14 @@ angular.module('ngAudio', [])
                     $volumeToSet = undefined;
                 }
 
-                if (!PERFORMANCE_MODE) {
+                if (!$observeProperties) {
                     audioObject.currentTime = audio.currentTime;
                     audioObject.duration = audio.duration;
                     audioObject.remaining = audio.duration - audio.currentTime;
                     audioObject.progress = audio.currentTime / audio.duration;
                     audioObject.paused = audio.paused;
                     audioObject.src = audio.src;
-                } else {
-                    audioObject.paused = true;
-                }
-
-
+                };
 
                 if (!$isMuting && !ngAudioGlobals.isMuting) {
                     audioObject.volume = audio.volume;
@@ -272,12 +229,8 @@ angular.module('ngAudio', [])
 
             $setWatch();
         }, 1);
-
-        }
-
-
+    }
 }])
-
 .service('ngAudio', ['ngAudioObject', 'ngAudioGlobals', function(ngAudioObject, ngAudioGlobals) {
     this.play = function(id) {
         var audio = new ngAudioObject(id);
@@ -300,6 +253,4 @@ angular.module('ngAudio', [])
     this.toggleMute = function() {
         ngAudioGlobals.muting = !ngAudioGlobals.muting;
     };
-
-
 }]);
