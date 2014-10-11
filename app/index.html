@@ -30,18 +30,18 @@
                 </div>
                 <div>
                     <ul class="nav navbar-nav navbar-right">
-                    	<li ng-audio='audio/button-1.mp3' ><a href='https://github.com/danielstern/ngAudio' target=_blank>Github</a>
-                    	</li>
                         <li ng-audio='audio/button-1.mp3' ui-sref-active='active'><a ui-sref='docs'>Docs</a>
                         </li>
-                        <li ng-audio='audio/button-1.mp3' ui-sref-active='active'><a  ui-sref='audio.detail({id:"audio|song.mp3"})'>Demo #1</a>
+                        <li ng-audio='audio/button-1.mp3' ui-sref-active='active'><a ui-sref='audio.detail({id:"audio|song.mp3"})'>Demo #1</a>
                         </li>
-                        <li class="dropdown">
+                        <!-- <li class="dropdown">
                             <a ui-sref='audio' ui-sref-active='active' class="dropdown-toggle" data-toggle="dropdown">Sounds <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li ng-audio='audio/button-1.mp3' ng-repeat='audio in audios' ui-sref-active="active"><a ui-sref='audio.detail({id:audio.safeId})'>{{audio.id}}</a>
                                 </li>
                             </ul>
+                        </li> -->
+                        <li ng-audio='audio/button-1.mp3'><a href='https://github.com/danielstern/ngAudio' target=_blank>Github</a>
                         </li>
                     </ul>
 
@@ -54,7 +54,7 @@
         <!-- <ngAudio id='sword' src='audio/sword.mp3'></ngAudio> -->
         <!-- <button ng-audio="audio/lid.mp3" volume=0.7 start=0.1>remote</button> -->
         <!-- <button ng-audio="sword">local</button> -->
-   
+
         <div ui-view></div>
         <!-- <div ui-view='main' class='col-md-12'></div> -->
         <!-- <div ui-view='detail' class='col-md-12'></div> -->
