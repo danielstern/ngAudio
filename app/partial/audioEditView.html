@@ -11,9 +11,19 @@
     </p>
 </div>
 <div ng-if='!audio.error && audio.canPlay' class='form-group col-md-8 col-md-offset-4'>
+    <form class=form-inline>
+        <div class=form-group>
     <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
     <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
     <button class='btn btn-neutral' ng-click='audio.muting = !audio.muting'>{{audio.muting ? "Unmute" : "Mute" }}</button>
+    <div class='checkbox pull-right'>
+        <label>
+    <input type=checkbox ng-model=audio.loop ng-click='audio.loop = !audio.loop'>
+            Loop
+        </label>
+        </div>
+    </div>
+    </form>
 </div>
 
 <form class='form-horizontal'>

@@ -16,8 +16,7 @@ angular.module('ngAudio', [])
             // audio.unbind();
             
             $element.on('click', function() {
-                console.log("Playin sound")
-                // audio.pause();
+
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
@@ -98,6 +97,7 @@ angular.module('ngAudio', [])
             $willPause = false,
             $willRestart = false,
             $volumeToSet,
+            $looping,
             $isMuting = false,
             $observeProperties = true,
             audio,
@@ -152,7 +152,8 @@ angular.module('ngAudio', [])
                     volume: audioObject.volume,
                     currentTime: audioObject.currentTime,
                     progress: audioObject.progress,
-                    muting: audioObject.muting
+                    muting: audioObject.muting,
+                    loop: audioObject.loop,
                 };
             }, function(newValue, oldValue) {
                 if (newValue.currentTime !== oldValue.currentTime) {
@@ -165,8 +166,13 @@ angular.module('ngAudio', [])
                 if (newValue.volume !== oldValue.volume) {
                     audioObject.setVolume(newValue.volume);
                 }
+
                 if (newValue.volume !== oldValue.volume) {
                     audioObject.setVolume(newValue.volume);
+                }
+
+                if (newValue.loop !== oldValue.loop) {
+                    $looping = newValue.loop;
                 }
 
                 if (newValue.muting !== oldValue.muting) {
@@ -227,6 +233,16 @@ angular.module('ngAudio', [])
                     audioObject.progress = audio.currentTime / audio.duration;
                     audioObject.paused = audio.paused;
                     audioObject.src = audio.src;
+
+                    if ($looping && audioObject.currentTime === audioObject.duration) {
+                        if ($looping !== true) {
+                            $looping--;
+                            if (!$looping) return;
+                        }
+                        audioObject.setCurrentTime(0);
+                        audioObject.play();
+
+                    }
                 }
 
                 if (!$isMuting && !ngAudioGlobals.isMuting) {
