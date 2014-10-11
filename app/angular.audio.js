@@ -105,6 +105,7 @@ angular.module('ngAudio', [])
 
         this.id = id;
         this.safeId = id.replace('/', '|');
+        this.loop = 0;
 
         this.unbind = function() {
             $observeProperties = false;
@@ -237,7 +238,8 @@ angular.module('ngAudio', [])
                     if ($looping && audioObject.currentTime === audioObject.duration) {
                         if ($looping !== true) {
                             $looping--;
-                            if (!$looping) return;
+                            audioObject.loop--;
+                            // if (!$looping) return;
                         }
                         audioObject.setCurrentTime(0);
                         audioObject.play();
