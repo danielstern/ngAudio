@@ -132,6 +132,15 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
+            <td>loop:number or true</td>
+            <td>
+                <p>
+                    Read - the number of times the audio will play again after it's done playing, or true if it will repeat indefinitely
+                </p>
+                <p>Write - setting a number will cause the audio to play that many more times after finishing. Setting the value to true will cause the sound to loop indefinitely.</p>
+            </td>
+        </tr>
+        <tr>
             <td>remaining:number (read only)</td>
             <td>
                 <p>
@@ -194,6 +203,10 @@ angular.module('yourModule',['ngAudio'])
         <tr>
             <td>start</td>
             <td>Specifies a start time for the sound.</td>
+        </tr>
+        <tr>
+            <td>loop</td>
+            <td>Set a number to repeat a sound that many times, or true to repeat indefinitely.</td>
         </tr>
 
     </table>
