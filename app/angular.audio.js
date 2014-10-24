@@ -8,15 +8,19 @@ angular.module('ngAudio', [])
             volume: '=',
             start: '=',
             currentTime: '=',
-            loop: '='
+            loop: '=',
+            clickPlay: '='
         },
         controller: function($scope, $attrs, $element, $timeout) {
 
             var audio = ngAudio.load($attrs.ngAudio);
+            $scope.$audio = audio;
             // audio.unbind();
             
             $element.on('click', function() {
-
+                if ($scope.clickPlay === false) {
+                    return;
+                }
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
