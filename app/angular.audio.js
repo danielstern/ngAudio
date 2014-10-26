@@ -21,6 +21,9 @@ angular.module('ngAudio', [])
                 if ($scope.clickPlay === false) {
                     return;
                 }
+
+                audio.audio.play();
+                
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
