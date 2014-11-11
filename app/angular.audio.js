@@ -179,9 +179,7 @@ angular.module('ngAudio', [])
                     audioObject.setVolume(newValue.volume);
                 }
 
-                if (newValue.loop !== oldValue.loop) {
-                    $looping = newValue.loop;
-                }
+                $looping = newValue.loop;
 
                 if (newValue.muting !== oldValue.muting) {
                     audioObject.setMuting(newValue.muting);
