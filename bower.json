@@ -2,7 +2,7 @@
   "name": "angular-audio",
   "version": "1.2.0",
   "description": "Total awesomeness for playing sounds in AngularJS",
-  "main":"app/angular.audio.js",
+  "main": "app/angular.audio.js",
   "homepage": "http://danielstern.github.io/ngAudio/",
   "repository": {
     "type": "git",
@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "bootstrap": "~3.2.0",
-    "angular": "~1.2.23",
-    "angular-ui-router": "~0.2.11"
+    "angular": "~1.2.23"
   }
 }
