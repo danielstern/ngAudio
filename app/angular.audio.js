@@ -208,7 +208,7 @@ angular.module('ngAudio', [])
                 if ($isMuting || ngAudioGlobals.isMuting) {
                     audio.volume = 0;
                 } else {
-                    audio.volume = audioObject.volume || 1;
+                    audio.volume = audioObject.volume !== undefined ? audioObject.volume : 1;
                 }
 
                 if ($willPlay) {
