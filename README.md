@@ -8,6 +8,11 @@ Total awesomeness for playing sounds. Project page here:
 
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
 
+Release Notes v1.2.1
+-------
+- removed depencency on bootstrap, jquery and ui-router
+- fix 0 volume bug
+
 Release Notes v1.2
 -------
 
