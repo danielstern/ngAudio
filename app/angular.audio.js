@@ -15,14 +15,14 @@ angular.module('ngAudio', [])
             var audio = ngAudio.load($attrs.ngAudio);
             $scope.$audio = audio;
             // audio.unbind();
-            
+
             $element.on('click', function() {
                 if ($scope.clickPlay === false) {
                     return;
                 }
 
                 audio.audio.play();
-                
+
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
@@ -52,22 +52,33 @@ angular.module('ngAudio', [])
 
 .service('remoteAudioFindingService', ['$q', function($q) {
 
+    var storage = {};
+
+    this.addToStorage = function ( key, audio ) {
+        storage[key] = audio;
+    };
+
     this.find = function(url) {
         var deferred = $q.defer();
-        var audio = new Audio();
 
-        audio.addEventListener('error', function() {
-            deferred.reject();
-        });
+        if ( !storage[url] ) {
+            var audio = new Audio();
 
-        audio.addEventListener('loadstart', function() {
-            deferred.resolve(audio);
-        });
-
-        // bugfix for chrome...
-        setTimeout(function() {
             audio.src = url;
-        }, 1);
+
+            this.addToStorage(url, audio);
+
+            audio.addEventListener('error', function() {
+                deferred.reject();
+            });
+
+            audio.addEventListener('loadstart', function() {
+                deferred.resolve(audio);
+            });
+
+        } else {
+            deferred.resolve(storage[url]);
+        }
 
         return deferred.promise;
 
