@@ -7,10 +7,10 @@
         Error playing this sound.
     </p>
     <p ng-if=!audio.canPlay>
-        Sound is loading...
+        Sound is loading, or you are viewing this on a device that doesn't support the <code>canPlay</code> property.
     </p>
 </div>
-<div ng-if='!audio.error && audio.canPlay' class='form-group col-md-8 col-md-offset-4'>
+<div ng-if='!audio.error' class='form-group col-md-8 col-md-offset-4'>
     <form class=form-inline>
         <div class='form-group col-xs-9'>
             <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
