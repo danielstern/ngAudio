@@ -1,5 +1,4 @@
 'use strict';
-var angular = angular;
 angular.module('ngAudio', [])
 .directive('ngAudio', ['$compile', '$q', 'ngAudio', function($compile, $q, ngAudio) {
     return {
@@ -8,15 +7,22 @@ angular.module('ngAudio', [])
             volume: '=',
             start: '=',
             currentTime: '=',
-            loop: '='
+            loop: '=',
+            clickPlay: '='
         },
         controller: function($scope, $attrs, $element, $timeout) {
 
             var audio = ngAudio.load($attrs.ngAudio);
+            $scope.$audio = audio;
             // audio.unbind();
             
             $element.on('click', function() {
+                if ($scope.clickPlay === false) {
+                    return;
+                }
 
+                audio.audio.play();
+                
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
@@ -172,9 +178,7 @@ angular.module('ngAudio', [])
                     audioObject.setVolume(newValue.volume);
                 }
 
-                if (newValue.loop !== oldValue.loop) {
-                    $looping = newValue.loop;
-                }
+                $looping = newValue.loop;
 
                 if (newValue.muting !== oldValue.muting) {
                     audioObject.setMuting(newValue.muting);
@@ -203,7 +207,7 @@ angular.module('ngAudio', [])
                 if ($isMuting || ngAudioGlobals.isMuting) {
                     audio.volume = 0;
                 } else {
-                    audio.volume = audioObject.volume || 1;
+                    audio.volume = audioObject.volume !== undefined ? audioObject.volume : 1;
                 }
 
                 if ($willPlay) {
