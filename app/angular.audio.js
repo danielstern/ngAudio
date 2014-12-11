@@ -246,7 +246,7 @@ angular.module('ngAudio', [])
                     audioObject.paused = audio.paused;
                     audioObject.src = audio.src;
 
-                    if ($looping && audioObject.currentTime === audioObject.duration) {
+                    if ($looping && audioObject.currentTime >= audioObject.duration) {
                         if ($looping !== true) {
                             $looping--;
                             audioObject.loop--;
