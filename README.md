@@ -24,6 +24,16 @@ Release Notes v1.2
 - reduced file size
 - reduced interval cycle
 
+License
+-------
+<a href=http://opensource.org/licenses/MIT target=_blank>
+The MIT License
+</a>
+
+<a  href=http://danielstern.ca/ target=_blank>
+Copyright (c) daniel stern, Azureda
+</a>
+
 
 Release Notes v1.0
 ---------
