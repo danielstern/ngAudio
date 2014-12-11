@@ -24,6 +24,11 @@ Release Notes v1.2
 - reduced file size
 - reduced interval cycle
 
+Release Notes v1.0
+---------
+- Not backwards compatible with previous version. please check out the [Angular Audio Docs](http://danielstern.github.io/ngAudio/#/docs) since this is pretty much completely different
+- for previous version check out branch *v0.9*
+
 License
 -------
 <a href=http://opensource.org/licenses/MIT target=_blank>
@@ -33,9 +38,3 @@ The MIT License
 <a  href=http://danielstern.ca/ target=_blank>
 Copyright (c) daniel stern, Azureda
 </a>
-
-
-Release Notes v1.0
----------
-- Not backwards compatible with previous version. please check out the [Angular Audio Docs](http://danielstern.github.io/ngAudio/#/docs) since this is pretty much completely different
-- for previous version check out branch *v0.9*
