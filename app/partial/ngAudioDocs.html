@@ -183,7 +183,7 @@ angular.module('yourModule',['ngAudio'])
         <strong>ngAudio</strong>can be applied as a directive on any element to have it play a sound when clicked. Sounds are preloaded as soon as all other elements on the page are resolved.
     </p>
     <code>
-        <pre>&lt;button ng-audio=sounds/mySound.mp3 vol=0.5 start=0.2 &gt; Click me &lt;/button&gt;</pre>
+        <pre>&lt;button ng-audio=&quot;sounds/mySound.mp3&quot; volume=&quot;0.5&quot; start=&quot;0.2&quot;&gt;Click me&lt;/button&gt;</pre>
     </code>
 
     <table class="table table-striped table-bordered table-condensed">
@@ -197,7 +197,7 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
-            <td>vol</td>
+            <td>volume</td>
             <td>Specifies a volume for the sound to play.</td>
         </tr>
         <tr>
