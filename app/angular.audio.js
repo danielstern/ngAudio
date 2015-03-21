@@ -14,7 +14,7 @@ angular.module('ngAudio', [])
 
             var audio = ngAudio.load($attrs.ngAudio);
             $scope.$audio = audio;
-            // audio.unbind();
+            audio.unbind();
             
             $element.on('click', function() {
                 if ($scope.clickPlay === false) {
@@ -27,9 +27,27 @@ angular.module('ngAudio', [])
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
 
-                $timeout(function() {
-                    audio.play();
-                }, 5);
+
+            });
+        }
+    };
+}])
+
+.directive('ngAudioHover', ['$compile', '$q', 'ngAudio', function($compile, $q, ngAudio) {
+    return {
+        restrict: 'AEC',
+        controller: function($scope, $attrs, $element, $timeout) {
+
+            var audio = ngAudio.load($attrs.ngAudioHover);
+            
+            $element.on('mouseover rollover hover', function() {
+                
+                audio.audio.play();
+                
+                audio.volume = $attrs.volumeHover || audio.volume;
+                audio.loop = $attrs.loop;
+                audio.currentTime = $attrs.startHover || 0;
+
             });
         }
     };
