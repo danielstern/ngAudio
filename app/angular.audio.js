@@ -27,6 +27,10 @@ angular.module('ngAudio', [])
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
 
+                $timeout(function() {
+                    audio.play();
+                }, 5);
+
 
             });
         }
