@@ -8,6 +8,16 @@ Total awesomeness for playing sounds. Project page here:
 
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
 
+Release Notes v1.5.0
+-------
+- add playback rate supprt
+
+Release Notes v1.4.2
+-------
+- add unlock boolean to disable unlocking if desired
+- added performance var to let user tweak performance
+
+
 Release Notes v1.4.0
 -------
 - several bug fixes. update version numbers
