@@ -51,6 +51,14 @@ angular.module('yourModule',['ngAudio'])
             <td>unmute()</td>
             <td>Globally unmutes all the sounds.</td>
         </tr>
+        <tr>
+            <td>performance : Number</td>
+            <td>Changes the interval that Angular Audio observes the audio. A lower number here will improve responsiveness at the cost of processor power.</td>
+        </tr>
+        <tr>
+            <td>unlock = true : Boolean</td>
+            <td>If true, attempts to 'unlock' audio files so that they work on mobile devices. Disabling this can break this library in mobile!</td>
+        </tr>
     </table>
 </article>
 <article>
@@ -122,6 +130,15 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
+            <td>playbackRate:number</td>
+            <td>
+                <p>
+                    Read - returns the speed that the sound is playing at, typically from 0.5 - 1.5.
+                </p>
+                <p>Write - sets the audio speed. Values between 0.5 and 1.5 are recommended.</p>
+            </td>
+        </tr>
+        <tr>
             <td>muting:boolean</td>
             <td>
                 <p>
@@ -180,10 +197,10 @@ angular.module('yourModule',['ngAudio'])
         ngAudio Directive
     </h3>
     <p>
-        <strong>ngAudio</strong>can be applied as a directive on any element to have it play a sound when clicked. Sounds are preloaded as soon as all other elements on the page are resolved.
+        <strong>ngAudio</strong> can be applied as a directive on any element to have it play a sound when clicked. Sounds are preloaded as soon as all other elements on the page are resolved.
     </p>
     <code>
-        <pre>&lt;button ng-audio=sounds/mySound.mp3 vol=0.5 start=0.2 &gt; Click me &lt;/button&gt;</pre>
+        <pre>&lt;button ng-audio=&quot;sounds/mySound.mp3&quot; volume=&quot;0.5&quot; start=&quot;0.2&quot;&gt;Click me&lt;/button&gt;</pre>
     </code>
 
     <table class="table table-striped table-bordered table-condensed">
@@ -197,7 +214,7 @@ angular.module('yourModule',['ngAudio'])
             </td>
         </tr>
         <tr>
-            <td>vol</td>
+            <td>volume</td>
             <td>Specifies a volume for the sound to play.</td>
         </tr>
         <tr>
@@ -206,6 +223,43 @@ angular.module('yourModule',['ngAudio'])
         </tr>
         <tr>
             <td>loop</td>
+            <td>Set a number to repeat a sound that many times, or true to repeat indefinitely.</td>
+        </tr>
+
+    </table>
+</article>
+
+<article>
+    <h3>
+        ngAudioHover Directive
+    </h3>
+    <p>
+        <strong>ngAudio-hover</strong> is like ngAudio but for hovering, and can be applied as a directive on any element to have it play a sound when it is hovered over. Sounds are preloaded as soon as all other elements on the page are resolved.
+    </p>
+    <code>
+        <pre>&lt;button ng-audio-hover=&quot;sounds/mySound.mp3&quot; volume-hover=&quot;0.5&quot; start-hover=&quot;0.2&quot;&gt;Click me&lt;/button&gt;</pre>
+    </code>
+
+    <table class="table table-striped table-bordered table-condensed">
+        <tr>
+            <td>ng-audio-hover</td>
+            <td>
+                <p>
+                    Takes a string and creates a new object with
+                    <strong>ngAudio.load()</strong>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>volume-hover</td>
+            <td>Specifies a volume for the sound to play.</td>
+        </tr>
+        <tr>
+            <td>start-hover</td>
+            <td>Specifies a start time for the sound.</td>
+        </tr>
+        <tr>
+            <td>loop-hover</td>
             <td>Set a number to repeat a sound that many times, or true to repeat indefinitely.</td>
         </tr>
 
