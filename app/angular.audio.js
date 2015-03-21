@@ -205,6 +205,8 @@ angular.module('ngAudio', [])
                 audio.addEventListener('canplay', function() {
                     audioObject.canPlay = true;
                 });
+
+                audio.playbackRate = 0.5;
             }, function(error) {
                 audioObject.error = true;
                 console.warn(error);
