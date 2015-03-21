@@ -8,6 +8,11 @@ Total awesomeness for playing sounds. Project page here:
 
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
 
+Release Notes v1.6.2
+-------
+- add hover support
+- update gh-pages
+
 Release Notes v1.5.0
 -------
 - add playback rate supprt
