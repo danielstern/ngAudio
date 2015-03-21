@@ -115,6 +115,8 @@ angular.module('ngAudio', [])
             $willPlay = false,
             $willPause = false,
             $willRestart = false,
+            $willChangePlaybackRate = false,
+            $newPlaybackRate = false,
             $volumeToSet,
             $looping,
             $isMuting = false,
@@ -150,6 +152,11 @@ angular.module('ngAudio', [])
             $volumeToSet = volume;
         };
 
+        this.setPlaybackRate = function(rate) {
+            $newPlaybackRate = rate;
+            $willChangePlaybackRate = true;
+        };
+
         this.setMuting = function(muting) {
             $isMuting = muting;
         };
@@ -174,6 +181,7 @@ angular.module('ngAudio', [])
                     progress: audioObject.progress,
                     muting: audioObject.muting,
                     loop: audioObject.loop,
+                    playbackRate: audioObject.playbackRate
                 };
             }, function(newValue, oldValue) {
                 if (newValue.currentTime !== oldValue.currentTime) {
@@ -187,9 +195,11 @@ angular.module('ngAudio', [])
                     audioObject.setVolume(newValue.volume);
                 }
 
-                if (newValue.volume !== oldValue.volume) {
-                    audioObject.setVolume(newValue.volume);
+                if (newValue.playbackRate !== oldValue.playbackRate) {
+                    audioObject.setPlaybackRate(newValue.playbackRate);
                 }
+
+
 
                 $looping = newValue.loop;
 
@@ -206,7 +216,7 @@ angular.module('ngAudio', [])
                     audioObject.canPlay = true;
                 });
 
-                audio.playbackRate = 0.5;
+
             }, function(error) {
                 audioObject.error = true;
                 console.warn(error);
@@ -239,6 +249,11 @@ angular.module('ngAudio', [])
                 if ($willPause) {
                     audio.pause();
                     $willPause = false;
+                }
+
+                if ($willChangePlaybackRate) {
+                    audio.playbackRate = $newPlaybackRate; 
+                    $willChangePlaybackRate = false;
                 }
 
                 if ($volumeToSet) {
