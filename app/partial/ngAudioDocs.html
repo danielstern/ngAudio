@@ -51,6 +51,14 @@ angular.module('yourModule',['ngAudio'])
             <td>unmute()</td>
             <td>Globally unmutes all the sounds.</td>
         </tr>
+        <tr>
+            <td>performance : Number</td>
+            <td>Changes the interval that Angular Audio observes the audio. A lower number here will improve responsiveness at the cost of processor power.</td>
+        </tr>
+        <tr>
+            <td>unlock = true : Boolean</td>
+            <td>If true, attempts to 'unlock' audio files so that they work on mobile devices. Disabling this can break this library in mobile!</td>
+        </tr>
     </table>
 </article>
 <article>

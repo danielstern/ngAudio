@@ -92,17 +92,23 @@ angular.module('ngAudio', [])
 
 .value('ngAudioGlobals', {
     muting: false,
-    songmuting: false
+    songmuting: false,
+    performance: 25,
+    unlock: true
 })
 
 .factory('NgAudioObject', ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals', function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
     return function(id) {
 
-        window.addEventListener("click",function twiddle(){
-            audio.play();
-            audio.pause();
-            window.removeEventListener("click",twiddle);
-        });
+        if (ngAudioGlobals.unlock) {
+
+            window.addEventListener("click",function twiddle(){
+                audio.play();
+                audio.pause();
+                window.removeEventListener("click",twiddle);
+            });
+        
+        }
 
 
         var $audioWatch,
@@ -266,7 +272,7 @@ angular.module('ngAudio', [])
             }
 
             $setWatch();
-        }, 25);
+        }, ngAudioGlobals.performance);
     };
 }])
 .service('ngAudio', ['NgAudioObject', 'ngAudioGlobals', function(NgAudioObject, ngAudioGlobals) {
