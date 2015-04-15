@@ -15,14 +15,14 @@ angular.module('ngAudio', [])
             var audio = ngAudio.load($attrs.ngAudio);
             $scope.$audio = audio;
             audio.unbind();
-            
+
             $element.on('click', function() {
                 if ($scope.clickPlay === false) {
                     return;
                 }
 
                 audio.audio.play();
-                
+
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
@@ -43,11 +43,11 @@ angular.module('ngAudio', [])
         controller: function($scope, $attrs, $element, $timeout) {
 
             var audio = ngAudio.load($attrs.ngAudioHover);
-            
+
             $element.on('mouseover rollover hover', function() {
-                
+
                 audio.audio.play();
-                
+
                 audio.volume = $attrs.volumeHover || audio.volume;
                 audio.loop = $attrs.loop;
                 audio.currentTime = $attrs.startHover || 0;
@@ -129,7 +129,7 @@ angular.module('ngAudio', [])
                 audio.pause();
                 window.removeEventListener("click",twiddle);
             });
-        
+
         }
 
 
@@ -274,7 +274,7 @@ angular.module('ngAudio', [])
                 }
 
                 if ($willChangePlaybackRate) {
-                    audio.playbackRate = $newPlaybackRate; 
+                    audio.playbackRate = $newPlaybackRate;
                     $willChangePlaybackRate = false;
                 }
 
@@ -336,5 +336,9 @@ angular.module('ngAudio', [])
 
     this.toggleMute = function() {
         ngAudioGlobals.muting = !ngAudioGlobals.muting;
+    };
+
+    this.setUnlock = function(unlock) {
+      ngAudioGlobals.unlock = unlock;
     };
 }]);
