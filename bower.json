@@ -1,6 +1,6 @@
 {
   "name": "angular-audio",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Total awesomeness for playing sounds in AngularJS",
   "main": "app/angular.audio.js",
   "homepage": "http://danielstern.github.io/ngAudio/",
@@ -9,6 +9,6 @@
     "url": "git://github.com/danielstern/ngAudio.git"
   },
   "dependencies": {
-    "angular": "~1.2.23"
+    "angular": "~1.3.15"
   }
 }
