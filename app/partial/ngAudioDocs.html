@@ -26,6 +26,20 @@ angular.module('yourModule',['ngAudio'])
 })  </pre>
 </code>
 <article>
+	<h4>Options</h4>
+	<p>You can overwrite the default options by setting your own ngAudioGlobals value</p>
+	<code>
+		angular.module('yourModule')
+		.value('ngAudioGlobals', {
+			muting: false,
+			songmuting: false,
+			// the interval to observe the audio in milliseconds, lower number == improved responsiveness at the cost of processor power
+			performance: 25,
+			unlock: true
+		})
+	</code>
+</article>
+<article>
     <h4>ngAudio Service Reference</h4>
     <table class="table table-striped table-bordered table-condensed">
         <tr>
@@ -50,14 +64,6 @@ angular.module('yourModule',['ngAudio'])
         <tr>
             <td>unmute()</td>
             <td>Globally unmutes all the sounds.</td>
-        </tr>
-        <tr>
-            <td>performance : Number</td>
-            <td>Changes the interval that Angular Audio observes the audio. A lower number here will improve responsiveness at the cost of processor power.</td>
-        </tr>
-        <tr>
-            <td>unlock = true : Boolean</td>
-            <td>If true, attempts to 'unlock' audio files so that they work on mobile devices. Disabling this can break this library in mobile!</td>
         </tr>
     </table>
 </article>
