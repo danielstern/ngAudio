@@ -184,7 +184,7 @@ angular.module('ngAudio', [])
         };
 
         this.setProgress = function(progress) {
-            if (audio && audio.duration) {
+            if (audio && audio.duration && isFinite(progress)) {
                 audio.currentTime = audio.duration * progress;
             }
         };
