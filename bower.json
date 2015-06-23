@@ -8,6 +8,9 @@
     "type": "git",
     "url": "git://github.com/danielstern/ngAudio.git"
   },
+  "ignore":[
+    "app/audio/*.*"
+  ],
   "dependencies": {
     "angular": ">=1.2 < 1.5"
   },

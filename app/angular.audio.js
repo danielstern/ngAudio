@@ -15,8 +15,9 @@ angular.module('ngAudio', [])
         controller: function($scope, $attrs, $element, $timeout) {
             
             /* Loads the sound from destination */
+            var audio;
             function initSound(){
-                var audio = ngAudio.load($attrs.ngAudio);
+                audio = ngAudio.load($attrs.ngAudio);
                 /* Add audio to local scope for modification with nested inputs */
                 $scope.$audio = audio;
 
@@ -368,4 +369,73 @@ angular.module('ngAudio', [])
     this.setUnlock = function(unlock) {
       ngAudioGlobals.unlock = unlock;
     };
-}]);
+}])
+.filter("trackTime", function(){
+    /* Conveniently takes a number and returns the track time */
+    
+    return function(input){
+
+        var totalSec = 0;
+
+        // String manipulation
+        var inputString = input ? input.toString() : "";
+        for (var i = 0; i < inputString.length; i++){
+            var dotIndex = inputString.indexOf(".");
+            totalSec = parseInt(inputString.slice(0, dotIndex));
+        }
+
+        var output = "";
+        var hours = 0;
+        var minutes = 0;
+        var seconds = 0;
+
+        if (totalSec > 3599) {
+
+            hours = Math.floor(totalSec / 3600);
+            minutes = Math.floor((totalSec - (hours * 3600)) / 60);
+            seconds = (totalSec - ((minutes * 60) + (hours * 3600))); 
+
+            if (hours.toString().length == 1) {
+                hours = "0" + (Math.floor(totalSec / 3600)).toString();
+            } 
+
+            if (minutes.toString().length == 1) {
+                minutes = "0" + (Math.floor((totalSec - (hours * 3600)) / 60)).toString();
+            } 
+
+            if (seconds.toString().length == 1) {
+                seconds = "0" + (totalSec - ((minutes * 60) + (hours * 3600))).toString(); 
+            } 
+
+            output = hours + ":" + minutes + ":" + seconds;
+
+        } else if (totalSec > 59) {
+
+            minutes = Math.floor(totalSec / 60);
+            seconds = totalSec - (minutes * 60);
+
+            if (minutes.toString().length == 1) {
+                 minutes = "0" + (Math.floor(totalSec / 60)).toString();
+            }
+
+            if (seconds.toString().length == 1) {
+                 seconds = "0" + (totalSec - (minutes * 60)).toString();
+            }
+
+            output = minutes + ":" + seconds;
+
+        } else {
+
+            seconds = totalSec;
+
+            if (seconds.toString().length == 1) {
+                seconds = "0" + (totalSec).toString();
+            }
+
+            output = totalSec + "s";
+
+        }
+
+        return output; 
+    }
+});
