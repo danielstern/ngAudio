@@ -18,7 +18,7 @@ To deploy to `gh-pages`, call `gulp deploy`;
 Total awesomeness for playing sounds. Project page here:
 
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
-##[Angular Audio Documentation](http://danielstern.github.io/ngAudio/docs)
+##[Angular Audio Documentation](http://danielstern.github.io/ngAudio/#/docs)
 
 Release Notes v1.7.0
 
