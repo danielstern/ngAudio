@@ -176,7 +176,13 @@ angular.module('ngAudio', [])
 
         this.play = function() {
             $willPlay = true;
+            return this;
         };
+        
+        var completeListeners = [];
+        this.complete = function(callback){
+            completeListeners.push(callback);
+        }
 
         this.pause = function() {
             $willPause = true;
@@ -318,6 +324,12 @@ angular.module('ngAudio', [])
                     audioObject.progress = audio.currentTime / audio.duration;
                     audioObject.paused = audio.paused;
                     audioObject.src = audio.src;
+                    
+                    if (audioObject.currentTime >= audioObject.duration) {
+                        completeListeners.forEach(function(listener){
+                            listener(audioObject);
+                        })
+                    }
 
                     if ($looping && audioObject.currentTime >= audioObject.duration) {
                         if ($looping !== true) {
