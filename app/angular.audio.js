@@ -8,12 +8,17 @@ angular.module('ngAudio', [])
             start: '=',
             currentTime: '=',
             loop: '=',
-            clickPlay: '='
+            clickPlay: '=',
+            //ngAudio:'='
         },
         controller: function($scope, $attrs, $element, $timeout) {
 
             var audio = ngAudio.load($attrs.ngAudio);
+            
+            /* Add audio to local scope for modification with nested inputs */
             $scope.$audio = audio;
+            
+            /* Remove watching features for improved performance */
             audio.unbind();
 
             $element.on('click', function() {
@@ -21,17 +26,18 @@ angular.module('ngAudio', [])
                     return;
                 }
 
+                /* iOS workaround: Call the play method directly in listener function */
                 audio.audio.play();
-
+                
+                /* Set volume to $scope volume if it exists, or default to audio's current value */
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
 
+                /* Fixes a bug with Firefox (???) */
                 $timeout(function() {
                     audio.play();
                 }, 5);
-
-
             });
         }
     };
@@ -45,9 +51,10 @@ angular.module('ngAudio', [])
             var audio = ngAudio.load($attrs.ngAudioHover);
 
             $element.on('mouseover rollover hover', function() {
-
+                
+                /* iOS workaround: Call the play method directly in listener function */
                 audio.audio.play();
-
+                
                 audio.volume = $attrs.volumeHover || audio.volume;
                 audio.loop = $attrs.loop;
                 audio.currentTime = $attrs.startHover || 0;
@@ -245,7 +252,15 @@ angular.module('ngAudio', [])
             });
 
 
-        $interval(function() {
+        var interval = $interval(checkWatchers, ngAudioGlobals.performance);
+        $rootScope.$watch(function(){
+            return ngAudioGlobals.performance;
+        },function(){
+            $interval.cancel(interval);
+            interval = $interval(checkWatchers, ngAudioGlobals.performance);
+        })
+        
+        function checkWatchers() {
             if ($audioWatch) {
                 $audioWatch();
             }
@@ -311,7 +326,7 @@ angular.module('ngAudio', [])
             }
 
             $setWatch();
-        }, ngAudioGlobals.performance);
+        }
     };
 }])
 .service('ngAudio', ['NgAudioObject', 'ngAudioGlobals', function(NgAudioObject, ngAudioGlobals) {

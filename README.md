@@ -4,6 +4,13 @@ NG-AUDIO
 The Angular Audio Module
 ------
 
+Development Instructions
+------
+1. Clone Git Repo
+2. Install dependencies with `npm install; bower install`;
+3. Install Gulp with `npm install -g gulp`;
+4. Run dev environment with `gulp`;
+
 Total awesomeness for playing sounds. Project page here:
 
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
