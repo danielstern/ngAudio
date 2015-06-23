@@ -447,6 +447,10 @@ angular.module('ngAudio', [])
             output = totalSec + "s";
 
         }
+        
+        if (Number.isNaN(output)){
+            debugger;
+        }
 
         return output; 
     }
