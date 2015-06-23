@@ -9,22 +9,34 @@ angular.module('ngAudio', [])
             currentTime: '=',
             loop: '=',
             clickPlay: '=',
+            disablePreload:'='
             //ngAudio:'='
         },
         controller: function($scope, $attrs, $element, $timeout) {
+            
+            /* Loads the sound from destination */
+            function initSound(){
+                var audio = ngAudio.load($attrs.ngAudio);
+                /* Add audio to local scope for modification with nested inputs */
+                $scope.$audio = audio;
 
-            var audio = ngAudio.load($attrs.ngAudio);
+                /* Remove watching features for improved performance */
+                audio.unbind();
+            }            
+
+            if (!$scope.disablePreload){
+                initSound();
+            }        
             
-            /* Add audio to local scope for modification with nested inputs */
-            $scope.$audio = audio;
-            
-            /* Remove watching features for improved performance */
-            audio.unbind();
 
             $element.on('click', function() {
                 if ($scope.clickPlay === false) {
                     return;
                 }
+                
+                if ($scope.disablePreload){
+                    initSound();
+                }        
 
                 /* iOS workaround: Call the play method directly in listener function */
                 audio.audio.play();
