@@ -15,6 +15,14 @@ Total awesomeness for playing sounds. Project page here:
 
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
 
+Release Notes v1.7.0
+
+- Add trackTime filter
+- Add disablePreload option
+- Fixed bug where performance could not be changed after sound was loaded
+- Updated bower file and dependencies to use Bower for development environment deps using devDependencies
+- Added longer song in examles
+
 Release Notes v1.6.2
 -------
 - add hover support

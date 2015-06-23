@@ -28,7 +28,6 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
         .state("audio", {
             url: "/audio",
             templateUrl: "partial/audioFullView.html",
-            // templateUrl: "partial/audioEditView.html",
 
         })
 
