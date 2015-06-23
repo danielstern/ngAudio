@@ -11,6 +11,10 @@ Development Instructions
 3. Install Gulp with `npm install -g gulp`;
 4. Run dev environment with `gulp`;
 
+Deployment
+-----
+To deploy to `gh-pages`, call `gulp deploy`;
+
 Total awesomeness for playing sounds. Project page here:
 
 ##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
@@ -22,6 +26,8 @@ Release Notes v1.7.0
 - Fixed bug where performance could not be changed after sound was loaded
 - Updated bower file and dependencies to use Bower for development environment deps using devDependencies
 - Added longer song in examles
+- automate to github page deploy
+- add stuff to Readme
 
 Release Notes v1.6.2
 -------
