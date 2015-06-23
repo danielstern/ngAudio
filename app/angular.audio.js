@@ -387,14 +387,7 @@ angular.module('ngAudio', [])
     
     return function(input){
 
-        var totalSec = 0;
-
-        // String manipulation
-        var inputString = input ? input.toString() : "";
-        for (var i = 0; i < inputString.length; i++){
-            var dotIndex = inputString.indexOf(".");
-            totalSec = parseInt(inputString.slice(0, dotIndex));
-        }
+        var totalSec = Math.floor(input | 0);
 
         var output = "";
         var hours = 0;
