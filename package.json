@@ -1,7 +1,10 @@
 {
   "name": "angular-audio",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "browser-sync": "^2.7.12",
+    "gulp": "^3.9.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.5.0",
