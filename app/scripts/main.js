@@ -28,7 +28,6 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
         .state("audio", {
             url: "/audio",
             templateUrl: "partial/audioFullView.html",
-            // templateUrl: "partial/audioEditView.html",
 
         })
 
@@ -60,5 +59,6 @@ angular.module("ngAudioDemo", ['ngAudio', 'ui.router'])
             ngAudio.load('audio/song1.mp3'),
             ngAudio.load('audio/song2.mp3'),
             ngAudio.load('audio/song3.mp3'),
+            ngAudio.load('audio/daniel_stern_robot_hitchiker.mp3'),
         ]
     })
