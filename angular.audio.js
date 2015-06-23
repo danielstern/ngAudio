@@ -8,30 +8,49 @@ angular.module('ngAudio', [])
             start: '=',
             currentTime: '=',
             loop: '=',
-            clickPlay: '='
+            clickPlay: '=',
+            disablePreload:'='
+            //ngAudio:'='
         },
         controller: function($scope, $attrs, $element, $timeout) {
-
-            var audio = ngAudio.load($attrs.ngAudio);
-            $scope.$audio = audio;
-            audio.unbind();
             
+            /* Loads the sound from destination */
+            var audio;
+            function initSound(){
+                audio = ngAudio.load($attrs.ngAudio);
+                /* Add audio to local scope for modification with nested inputs */
+                $scope.$audio = audio;
+
+                /* Remove watching features for improved performance */
+                audio.unbind();
+            }            
+
+            if (!$scope.disablePreload){
+                initSound();
+            }        
+            
+
             $element.on('click', function() {
                 if ($scope.clickPlay === false) {
                     return;
                 }
+                
+                if ($scope.disablePreload){
+                    initSound();
+                }        
 
+                /* iOS workaround: Call the play method directly in listener function */
                 audio.audio.play();
                 
+                /* Set volume to $scope volume if it exists, or default to audio's current value */
                 audio.volume = $scope.volume || audio.volume;
                 audio.loop = $scope.loop;
                 audio.currentTime = $scope.start || 0;
 
+                /* Fixes a bug with Firefox (???) */
                 $timeout(function() {
                     audio.play();
                 }, 5);
-
-
             });
         }
     };
@@ -43,9 +62,10 @@ angular.module('ngAudio', [])
         controller: function($scope, $attrs, $element, $timeout) {
 
             var audio = ngAudio.load($attrs.ngAudioHover);
-            
+
             $element.on('mouseover rollover hover', function() {
                 
+                /* iOS workaround: Call the play method directly in listener function */
                 audio.audio.play();
                 
                 audio.volume = $attrs.volumeHover || audio.volume;
@@ -129,7 +149,7 @@ angular.module('ngAudio', [])
                 audio.pause();
                 window.removeEventListener("click",twiddle);
             });
-        
+
         }
 
 
@@ -156,7 +176,13 @@ angular.module('ngAudio', [])
 
         this.play = function() {
             $willPlay = true;
+            return this;
         };
+        
+        var completeListeners = [];
+        this.complete = function(callback){
+            completeListeners.push(callback);
+        }
 
         this.pause = function() {
             $willPause = true;
@@ -184,7 +210,7 @@ angular.module('ngAudio', [])
         };
 
         this.setProgress = function(progress) {
-            if (audio && audio.duration) {
+            if (audio && audio.duration && isFinite(progress)) {
                 audio.currentTime = audio.duration * progress;
             }
         };
@@ -245,7 +271,15 @@ angular.module('ngAudio', [])
             });
 
 
-        $interval(function() {
+        var interval = $interval(checkWatchers, ngAudioGlobals.performance);
+        $rootScope.$watch(function(){
+            return ngAudioGlobals.performance;
+        },function(){
+            $interval.cancel(interval);
+            interval = $interval(checkWatchers, ngAudioGlobals.performance);
+        })
+        
+        function checkWatchers() {
             if ($audioWatch) {
                 $audioWatch();
             }
@@ -274,7 +308,7 @@ angular.module('ngAudio', [])
                 }
 
                 if ($willChangePlaybackRate) {
-                    audio.playbackRate = $newPlaybackRate; 
+                    audio.playbackRate = $newPlaybackRate;
                     $willChangePlaybackRate = false;
                 }
 
@@ -290,6 +324,12 @@ angular.module('ngAudio', [])
                     audioObject.progress = audio.currentTime / audio.duration;
                     audioObject.paused = audio.paused;
                     audioObject.src = audio.src;
+                    
+                    if (audioObject.currentTime >= audioObject.duration) {
+                        completeListeners.forEach(function(listener){
+                            listener(audioObject);
+                        })
+                    }
 
                     if ($looping && audioObject.currentTime >= audioObject.duration) {
                         if ($looping !== true) {
@@ -311,7 +351,7 @@ angular.module('ngAudio', [])
             }
 
             $setWatch();
-        }, ngAudioGlobals.performance);
+        }
     };
 }])
 .service('ngAudio', ['NgAudioObject', 'ngAudioGlobals', function(NgAudioObject, ngAudioGlobals) {
@@ -337,4 +377,77 @@ angular.module('ngAudio', [])
     this.toggleMute = function() {
         ngAudioGlobals.muting = !ngAudioGlobals.muting;
     };
-}]);
+
+    this.setUnlock = function(unlock) {
+      ngAudioGlobals.unlock = unlock;
+    };
+}])
+.filter("trackTime", function(){
+    /* Conveniently takes a number and returns the track time */
+    
+    return function(input){
+
+        var totalSec = 0;
+
+        // String manipulation
+        var inputString = input ? input.toString() : "";
+        for (var i = 0; i < inputString.length; i++){
+            var dotIndex = inputString.indexOf(".");
+            totalSec = parseInt(inputString.slice(0, dotIndex));
+        }
+
+        var output = "";
+        var hours = 0;
+        var minutes = 0;
+        var seconds = 0;
+
+        if (totalSec > 3599) {
+
+            hours = Math.floor(totalSec / 3600);
+            minutes = Math.floor((totalSec - (hours * 3600)) / 60);
+            seconds = (totalSec - ((minutes * 60) + (hours * 3600))); 
+
+            if (hours.toString().length == 1) {
+                hours = "0" + (Math.floor(totalSec / 3600)).toString();
+            } 
+
+            if (minutes.toString().length == 1) {
+                minutes = "0" + (Math.floor((totalSec - (hours * 3600)) / 60)).toString();
+            } 
+
+            if (seconds.toString().length == 1) {
+                seconds = "0" + (totalSec - ((minutes * 60) + (hours * 3600))).toString(); 
+            } 
+
+            output = hours + ":" + minutes + ":" + seconds;
+
+        } else if (totalSec > 59) {
+
+            minutes = Math.floor(totalSec / 60);
+            seconds = totalSec - (minutes * 60);
+
+            if (minutes.toString().length == 1) {
+                 minutes = "0" + (Math.floor(totalSec / 60)).toString();
+            }
+
+            if (seconds.toString().length == 1) {
+                 seconds = "0" + (totalSec - (minutes * 60)).toString();
+            }
+
+            output = minutes + ":" + seconds;
+
+        } else {
+
+            seconds = totalSec;
+
+            if (seconds.toString().length == 1) {
+                seconds = "0" + (totalSec).toString();
+            }
+
+            output = totalSec + "s";
+
+        }
+
+        return output; 
+    }
+});
