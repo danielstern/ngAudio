@@ -17,7 +17,7 @@ angular.module('ngAudio', [])
             /* Loads the sound from destination */
             var audio;
             function initSound(){
-                audio = ngAudio.load($attrs.ngAudio);
+                audio = ngAudio.load($attrs.ngAudio, $scope);
                 /* Add audio to local scope for modification with nested inputs */
                 $scope.$audio = audio;
 
@@ -65,7 +65,7 @@ angular.module('ngAudio', [])
         restrict: 'AEC',
         controller: function($scope, $attrs, $element, $timeout) {
 
-            var audio = ngAudio.load($attrs.ngAudioHover);
+            var audio = ngAudio.load($attrs.ngAudioHover, $scope);
 
             $element.on('mouseover rollover hover', function() {
                 
@@ -76,6 +76,10 @@ angular.module('ngAudio', [])
                 audio.loop = $attrs.loop;
                 audio.currentTime = $attrs.startHover || 0;
 
+            });
+
+            $element.on('$destroy', function() {
+                audio.destroy();
             });
         }
     };
@@ -144,7 +148,7 @@ angular.module('ngAudio', [])
 })
 
 .factory('NgAudioObject', ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals', function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
-    return function(id) {
+    return function(id, scope) {
 
         if (ngAudioGlobals.unlock) {
 
@@ -169,6 +173,7 @@ angular.module('ngAudio', [])
             $isMuting = false,
             $observeProperties = true,
             $destroyed = false,
+            $scope = scope || $rootScope,
             audio,
             audioObject = this;
 
@@ -227,7 +232,13 @@ angular.module('ngAudio', [])
             }
         };
 
-        this.destroy = function() {
+        this.destroy = $destroy;
+        
+        $scope.$on('$destroy', function() {
+            $destroy();
+        });
+        
+        function $destroy() {
             if (!$destroyed) {
                 if (interval) {
                     $interval.cancel(interval);
@@ -246,7 +257,7 @@ angular.module('ngAudio', [])
             if ($destroyed) {
                 return;
             }
-            $audioWatch = $rootScope.$watch(function() {
+            $audioWatch = $scope.$watch(function() {
                 return {
                     volume: audioObject.volume,
                     currentTime: audioObject.currentTime,
@@ -256,6 +267,7 @@ angular.module('ngAudio', [])
                     playbackRate: audioObject.playbackRate
                 };
             }, function(newValue, oldValue) {
+                //console.log("ngaudio watch callback for: " + audioObject.id);
                 if (newValue.currentTime !== oldValue.currentTime) {
                     audioObject.setCurrentTime(newValue.currentTime);
                 }
@@ -296,7 +308,7 @@ angular.module('ngAudio', [])
 
 
         var interval = $interval(checkWatchers, ngAudioGlobals.performance);
-        $intervalWatch = $rootScope.$watch(function(){
+        $intervalWatch = $scope.$watch(function(){
             return ngAudioGlobals.performance;
         },function(){
             $interval.cancel(interval);
@@ -379,15 +391,15 @@ angular.module('ngAudio', [])
     };
 }])
 .service('ngAudio', ['NgAudioObject', 'ngAudioGlobals', function(NgAudioObject, ngAudioGlobals) {
-    this.play = function(id) {
+    this.play = function(id, scope) {
 
-        var audio = new NgAudioObject(id);
+        var audio = new NgAudioObject(id, scope);
         audio.play();
         return audio;
     };
 
-    this.load = function(id) {
-        return new NgAudioObject(id);
+    this.load = function(id, scope) {
+        return new NgAudioObject(id, scope);
     };
 
     this.mute = function() {
