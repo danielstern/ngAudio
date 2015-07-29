@@ -52,6 +52,10 @@ angular.module('ngAudio', [])
                     audio.play();
                 }, 5);
             });
+            
+            $element.on('$destroy', function() {
+                audio.destroy();
+            });
         }
     };
 }])
@@ -154,6 +158,7 @@ angular.module('ngAudio', [])
 
 
         var $audioWatch,
+            $intervalWatch,
             $willPlay = false,
             $willPause = false,
             $willRestart = false,
@@ -163,6 +168,7 @@ angular.module('ngAudio', [])
             $looping,
             $isMuting = false,
             $observeProperties = true,
+            $destroyed = false,
             audio,
             audioObject = this;
 
@@ -221,7 +227,25 @@ angular.module('ngAudio', [])
             }
         };
 
+        this.destroy = function() {
+            if (!$destroyed) {
+                if (interval) {
+                    $interval.cancel(interval);
+                }
+                if ($intervalWatch) {
+                    $intervalWatch();
+                }
+                if ($audioWatch) {
+                    $audioWatch();
+                }
+                $destroyed = true;
+            }
+        }
+
         function $setWatch() {
+            if ($destroyed) {
+                return;
+            }
             $audioWatch = $rootScope.$watch(function() {
                 return {
                     volume: audioObject.volume,
@@ -272,7 +296,7 @@ angular.module('ngAudio', [])
 
 
         var interval = $interval(checkWatchers, ngAudioGlobals.performance);
-        $rootScope.$watch(function(){
+        $intervalWatch = $rootScope.$watch(function(){
             return ngAudioGlobals.performance;
         },function(){
             $interval.cancel(interval);
