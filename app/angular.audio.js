@@ -481,7 +481,7 @@ angular.module('ngAudio', [])
 
         }
         
-        if (Number.isNaN(output)){
+        if (typeof Number.isNaN === "function" && Number.isNaN(output)){
             debugger;
         }
 
