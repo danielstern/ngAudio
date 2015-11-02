@@ -144,7 +144,8 @@ angular.module('ngAudio', [])
     muting: false,
     songmuting: false,
     performance: 25,
-    unlock: true
+    unlock: true,
+    volume:1
 })
 
 .factory('NgAudioObject', ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals', function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
@@ -259,7 +260,8 @@ angular.module('ngAudio', [])
                     progress: audioObject.progress,
                     muting: audioObject.muting,
                     loop: audioObject.loop,
-                    playbackRate: audioObject.playbackRate
+                    playbackRate: audioObject.playbackRate,
+                    globalVolume: ngAudioGlobals.volume
                 };
             }, function(newValue, oldValue) {
                 //console.log("ngaudio watch callback for: " + audioObject.id);
@@ -276,6 +278,15 @@ angular.module('ngAudio', [])
 
                 if (newValue.playbackRate !== oldValue.playbackRate) {
                     audioObject.setPlaybackRate(newValue.playbackRate);
+                }
+                
+                if (newValue.globalVolume !== oldValue.globalVolume) {
+                    if (newValue.globalVolume === 0) {
+                        audioObject.setMuting(true);
+                    } else {
+                        audioObject.setMuting(false);
+                        audioObject.setVolume(newValue.globalVolume);
+                    }
                 }
 
 
@@ -420,6 +431,10 @@ angular.module('ngAudio', [])
 
     this.setUnlock = function(unlock) {
       ngAudioGlobals.unlock = unlock;
+    };
+    
+    this.setGlobalVolume = function(globalVolume) {
+      ngAudioGlobals.volume = globalVolume;
     };
 }])
 .filter("trackTime", function(){
