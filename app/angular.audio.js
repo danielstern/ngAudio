@@ -371,9 +371,15 @@ angular.module('ngAudio', [])
                     audioObject.currentTime = audio.currentTime;
                     audioObject.duration = audio.duration;
                     audioObject.remaining = audio.duration - audio.currentTime;
-                    audioObject.progress = audio.currentTime / audio.duration;
+					audioObject.progress = 0; //We set initial value to 0
                     audioObject.paused = audio.paused;
                     audioObject.src = audio.src;
+                    
+					//After we check if progress is bigger than 0, and we set
+                    var tempProgress = (audio.currentTime / audio.duration);
+                    if(tempProgress  > 0 ){
+                      audioObject.progress = tempProgress;
+                    }                    
                     
                     if (audioObject.currentTime >= audioObject.duration) {
                         completeListeners.forEach(function(listener){
