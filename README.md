@@ -2,7 +2,8 @@ NG-AUDIO
 ===
 
 The Angular Audio Module
-------
+
+Installation: `bower install angular-audio`
 
 Development Instructions
 ------
