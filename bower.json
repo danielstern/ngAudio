@@ -1,6 +1,6 @@
 {
   "name": "angular-audio",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "Total awesomeness for playing sounds in AngularJS",
   "license": "MIT",
   "main": "app/angular.audio.js",
@@ -13,7 +13,7 @@
     "app/audio/*.*"
   ],
   "dependencies": {
-    "angular": ">=1.2 < 1.5"
+    "angular": ">=1.2 < 1.6"
   },
   "devDependencies": {
     "jquery": "~2.1.4",
