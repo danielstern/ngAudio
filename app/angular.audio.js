@@ -110,7 +110,7 @@ angular.module('ngAudio', [])
             deferred.reject();
         });
 
-        audio.addEventListener('loadstart', function() {
+        audio.addEventListener('canplaythrough', function() {
             deferred.resolve(audio);
         });
 
