@@ -1,5 +1,13 @@
 'use strict';
 angular.module('ngAudio', [])
+  .constant('ngAudioDomUid', (function () {
+    var domUid = '';
+    for (var i=0; i<8; i++)
+    {
+      domUid = domUid + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return domUid;//unique id persisting through module life
+  })())
 .directive('ngAudio', ['$compile', '$q', 'ngAudio', function($compile, $q, ngAudio) {
     return {
         restrict: 'AEC',
@@ -100,24 +108,34 @@ angular.module('ngAudio', [])
     };
 }])
 
-.service('remoteAudioFindingService', ['$q', function($q) {
+.service('remoteAudioFindingService', ['$q', 'ngAudioDomUid', function($q, ngAudioDomUid) {
 
     this.find = function(url) {
         var deferred = $q.defer();
-        var audio = new Audio();
+        var $sound = document.getElementById(ngAudioDomUid);
+        if (!$sound)
+        {
+          var audioTag = document.createElement('audio');
+          audioTag.style = 'display: none';
+          audioTag.id = ngAudioDomUid;
+          audioTag.src = url;
+          audioTag.type = 'audio/mpeg';
+          document.body.appendChild(audioTag);
+          $sound = document.getElementById(ngAudioDomUid);
+          $sound.load();
+        }
+        else
+        {
+          $sound.pause();
+          $sound.src = url;
+          $sound.load();
+        }
 
-        audio.addEventListener('error', function() {
-            deferred.reject();
-        });
-
-        audio.addEventListener('loadstart', function() {
-            deferred.resolve(audio);
-        });
-
-        // bugfix for chrome...
-        setTimeout(function() {
-            audio.src = url;
-        }, 1);
+        if ($sound) {
+          deferred.resolve($sound);
+        } else {
+          deferred.reject(id);
+        }
 
         return deferred.promise;
 
