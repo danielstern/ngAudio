@@ -119,7 +119,6 @@ angular.module('ngAudio', [])
           audioTag.style.display = 'none';
           audioTag.id = ngAudioDomUid;
           audioTag.src = url;
-          audioTag.type = 'audio/mpeg';
           document.body.appendChild(audioTag);
           $sound = document.getElementById(ngAudioDomUid);
           $sound.load();
