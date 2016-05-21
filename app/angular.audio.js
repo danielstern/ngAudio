@@ -116,7 +116,7 @@ angular.module('ngAudio', [])
         if (!$sound)
         {
           var audioTag = document.createElement('audio');
-          audioTag.style = 'display: none';
+          audioTag.style.display = 'none';
           audioTag.id = ngAudioDomUid;
           audioTag.src = url;
           audioTag.type = 'audio/mpeg';
