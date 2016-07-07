@@ -347,7 +347,8 @@ angular.module('ngAudio', [])
                 }
 
                 if ($willRestart) {
-                    audio.src = 'about:blank';
+                    audio.currentTime = 0;
+                    audio.pause();
                     $willRestart = false;
                 }
 
