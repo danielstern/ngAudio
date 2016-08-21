@@ -190,6 +190,11 @@ angular.module('ngAudio', [])
             completeListeners.push(callback);
         }
 
+        var toFinishListeners = [];
+        this.toFinish = function(secs, callback){
+            toFinishListeners.push({'secs': secs, 'callback': callback});
+        }
+
         this.pause = function() {
             $willPause = true;
         };
@@ -386,6 +391,13 @@ angular.module('ngAudio', [])
                             listener(audioObject);
                         })
                     }
+
+                    toFinishListeners.forEach(function(listener) {
+                        if ((audioObject.duration - audioObject.currentTime) <= listener.secs) {
+                            listener.callback(audioObject);
+                            toFinishListeners.shift();
+                        }
+                    })
 
                     if ($looping && audioObject.currentTime >= audioObject.duration) {
                         if ($looping !== true) {
