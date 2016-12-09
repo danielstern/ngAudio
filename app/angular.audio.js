@@ -145,7 +145,7 @@ angular.module('ngAudio', [])
         if (ngAudioGlobals.unlock) {
 
             window.addEventListener("click",function twiddle(){
-                //Fixes audio hanging after multiple load requests
+                //Fixes audio hanging after multiple load requests.
                 try{
                    audio.play();
                    audio.pause();
