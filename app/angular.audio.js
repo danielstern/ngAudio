@@ -151,8 +151,10 @@ angular.module('ngAudio', [])
     return function(id, scope) {
 
         function twiddle(){
-            audio.play();
-            audio.pause();
+            try{
+              audio.play();
+              audio.pause();
+            }catch(e){}
             window.removeEventListener("click",twiddle);
         }
 
