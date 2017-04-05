@@ -184,7 +184,7 @@ angular.module('ngAudio', [])
             $newPlaybackRate = false,
             $volumeToSet,
             $looping,
-            $isMuting = false,
+            $muting = false,
             $observeProperties = true,
             $destroyed = false,
             $scope = scope || $rootScope,
@@ -236,7 +236,7 @@ angular.module('ngAudio', [])
         };
 
         this.setMuting = function(muting) {
-            $isMuting = muting;
+            $muting = muting;
         };
 
         this.setProgress = function(progress) {
@@ -363,7 +363,7 @@ angular.module('ngAudio', [])
             }
             if (audio) {
 
-                if ($isMuting || ngAudioGlobals.muting) {
+                if ($muting || ngAudioGlobals.muting) {
                     audio.volume = 0;
                 } else {
                     audio.volume = audioObject.volume !== undefined ? audioObject.volume : 1;
@@ -434,7 +434,7 @@ angular.module('ngAudio', [])
                     }
                 }
 
-                if (!$isMuting && !ngAudioGlobals.muting) {
+                if (!$muting && !ngAudioGlobals.muting) {
                     audioObject.volume = audio.volume;
                 }
 
