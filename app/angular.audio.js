@@ -184,7 +184,7 @@ angular.module('ngAudio', [])
             $newPlaybackRate = false,
             $volumeToSet,
             $looping,
-            $isMuting = false,
+            $muting = false,
             $observeProperties = true,
             $destroyed = false,
             $scope = scope || $rootScope,
@@ -236,7 +236,7 @@ angular.module('ngAudio', [])
         };
 
         this.setMuting = function(muting) {
-            $isMuting = muting;
+            $muting = muting;
         };
 
         this.setProgress = function(progress) {
@@ -288,7 +288,8 @@ angular.module('ngAudio', [])
                     muting: audioObject.muting,
                     loop: audioObject.loop,
                     playbackRate: audioObject.playbackRate,
-                    globalVolume: ngAudioGlobals.volume
+                    globalVolume: ngAudioGlobals.volume,
+                    globalMuting: ngAudioGlobals.muting
                 };
             }, function(newValue, oldValue) {
                 //console.log("ngaudio watch callback for: " + audioObject.id);
@@ -308,7 +309,7 @@ angular.module('ngAudio', [])
                 }
 
                 if (newValue.globalVolume !== oldValue.globalVolume) {
-                    if (newValue.globalVolume === 0) {
+                    if (newValue.globalVolume === 0 || newValue.globalVolume) {
                         audioObject.setMuting(true);
                     } else {
                         audioObject.setMuting(false);
@@ -316,12 +317,10 @@ angular.module('ngAudio', [])
                     }
                 }
 
-
-
                 $looping = newValue.loop;
 
-                if (newValue.muting !== oldValue.muting) {
-                    audioObject.setMuting(newValue.muting);
+                if (newValue.muting !== oldValue.muting || newValue.globalMuting !== oldValue.globalMuting) {
+                    audioObject.setMuting(newValue.muting || oldValue.globalMuting);
                 }
             }, true);
         }
@@ -363,7 +362,7 @@ angular.module('ngAudio', [])
             }
             if (audio) {
 
-                if ($isMuting || ngAudioGlobals.muting) {
+                if ($muting || ngAudioGlobals.muting) {
                     audio.volume = 0;
                 } else {
                     audio.volume = audioObject.volume !== undefined ? audioObject.volume : 1;
@@ -434,7 +433,7 @@ angular.module('ngAudio', [])
                     }
                 }
 
-                if (!$isMuting && !ngAudioGlobals.muting) {
+                if (!$muting && !ngAudioGlobals.muting) {
                     audioObject.volume = audio.volume;
                 }
 
