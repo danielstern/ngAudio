@@ -16,6 +16,7 @@
             <button class='btn btn-primary' ng-click='audio.paused ? audio.play() : audio.pause()'>{{audio.paused ? "Play" : "Pause" }}</button>
             <button class='btn btn-danger' ng-click='audio.restart()'>Stop</button>
             <button class='btn btn-neutral' ng-click='audio.muting = !audio.muting'>{{audio.muting ? "Unmute" : "Mute" }}</button>
+            <button class='btn btn-neutral' ng-click='audio.destroy()'>{{audio.destroyed() ? "Destroyed" : "Destroy" }}</button>
             <!-- <div class='checkbox pull-right'>
                 <label>
                     <input type=checkbox ng-model=audio.loop ng-click='audio.loop = !audio.loop'>Loop
@@ -27,13 +28,13 @@
             <div class="form-group col-xs-3">
               <label>Loop
                 <select  class='form-control input-small select' ng-model=audio.loop ng-options="value for value in [true,0,1,2,3,4,5]"></select>
-              </label> 
+              </label>
             </div>
 
             <!-- <label> -->
                 <!-- Loop -->
             <!-- </label> -->
-           
+
 
     </form>
 </div>
