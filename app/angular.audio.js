@@ -326,6 +326,10 @@ angular.module('ngAudio', [])
             }, true);
         }
 
+        function audioLoadError() {
+            audioObject.error = true;
+        }
+
         cleverAudioFindingService.find(id)
             .then(function(nativeAudio) {
                 audio = nativeAudio;
@@ -339,14 +343,13 @@ angular.module('ngAudio', [])
 
                 }
 
+                audio.addEventListener('error', audioLoadError);
+
                 audio.addEventListener('canplay', function() {
                     audioObject.canPlay = true;
                 });
 
-            }, function(error) {
-                audioObject.error = true;
-                console.warn(error);
-            });
+            }, audioLoadError);
 
 
         var interval = $interval(checkWatchers, ngAudioGlobals.performance);
