@@ -19,11 +19,9 @@
     "ngaudio",
     "angular-audio"
   ],
-  "dependencies": {
-    "browser-sync": "^2.7.12",
-    "gulp": "^3.9.0"
-  },
   "devDependencies": {
+    "browser-sync": "^2.14.0",
+    "gulp": "^3.9.1",
     "gulp-gh-pages": "^0.5.2"
   },
   "engines": {
