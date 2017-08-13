@@ -1,13 +1,17 @@
 'use strict';
 angular.module('ngAudio', [])
-  .constant('ngAudioDomUid', (function () {
-    var domUid = '';
+  .constant('ngAudioUidLookup',(function(){
+	  var uidLookup = {};
+	  return uidLookup;
+  })())
+  .value('ngAudioUidGenerator',function (){
+	var domUid = '';
     for (var i=0; i<8; i++)
     {
       domUid = domUid + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
     return domUid;//unique id persisting through module life
-  })())
+  })
 .directive('ngAudio', ['$compile', '$q', 'ngAudio', function($compile, $q, ngAudio) {
     return {
         restrict: 'AEC',
@@ -108,19 +112,24 @@ angular.module('ngAudio', [])
     };
 }])
 
-.service('remoteAudioFindingService', ['$q', 'ngAudioDomUid', function($q, ngAudioDomUid) {
-
+.service('remoteAudioFindingService', ['$q', 'ngAudioUidLookup','ngAudioUidGenerator', function($q, ngAudioUidLookup,ngAudioUidGenerator) {
     this.find = function(url) {
         var deferred = $q.defer();
-        var $sound = document.getElementById(ngAudioDomUid);
+		var uId;
+		uId = ngAudioUidLookup[url];
+		if(uId == null){
+			uId = ngAudioUidGenerator();
+			ngAudioUidLookup[url] = uId;
+		}
+        var $sound = document.getElementById(uId);
         if (!$sound)
         {
           var audioTag = document.createElement('audio');
           audioTag.style.display = 'none';
-          audioTag.id = ngAudioDomUid;
+          audioTag.id = uId;
           audioTag.src = url;
           document.body.appendChild(audioTag);
-          $sound = document.getElementById(ngAudioDomUid);
+          $sound = document.getElementById(uId);
           $sound.load();
         }
         else
