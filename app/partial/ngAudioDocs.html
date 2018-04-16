@@ -20,11 +20,13 @@
 
 <code>
     <pre>
-angular.module('yourModule',['ngAudio'])
-.controller("yourController",function($scope,ngAudio){
-    $scope.sound = ngAudio.load("sounds/mySound.mp3"); // returns NgAudioObject
-})  </pre>
+angular.module('yourModule', ['ngAudio'])
+.controller('yourController', ['$scope', 'ngAudio', function ($scope, ngAudio) {
+    $scope.sound = ngAudio.load('sounds/mySound.mp3'); // returns NgAudioObject
+})
+    </pre>
 </code>
+
 <article>
     <h4>ngAudio Service Reference</h4>
     <table class="table table-striped table-bordered table-condensed">
