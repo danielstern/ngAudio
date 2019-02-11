@@ -60,7 +60,7 @@ angular.module('ngAudio', [])
                         audio.volume = $attrs.volumeHover || audio.volume;
                         audio.loop = $attrs.loop;
                         audio.currentTime = $attrs.startHover || 0;
-                    }).catch(function(error) {
+                    }).catch(function (error) {
                     });
                 }
 
@@ -91,7 +91,7 @@ angular.module('ngAudio', [])
                             audio.volume = $attrs.volumeHover || audio.volume;
                             audio.loop = $attrs.loop;
                             audio.currentTime = $attrs.startHover || 0;
-                        }).catch(function(error) {
+                        }).catch(function (error) {
                         });
                     }
                     
