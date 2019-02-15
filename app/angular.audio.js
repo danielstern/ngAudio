@@ -52,17 +52,19 @@ angular.module('ngAudio', [])
                 }
 
                 /* iOS workaround: Call the play method directly in listener function */
-                audio.audio.play();
+                /* Promise to be handled for latest browser specs */
+                var playPromise = audio.audio.play();
+                if(playPromise !== undefined) {
+                    playPromise.then(function() {
+                        /* Set volume to $scope volume if it exists, or default to audio's current value */
+                        audio.volume = $attrs.volumeHover || audio.volume;
+                        audio.loop = $attrs.loop;
+                        audio.currentTime = $attrs.startHover || 0;
+                    }).catch(function (error) {
+                    });
+                }
 
-                /* Set volume to $scope volume if it exists, or default to audio's current value */
-                audio.volume = $scope.volume || audio.volume;
-                audio.loop = $scope.loop;
-                audio.currentTime = $scope.start || 0;
-
-                /* Fixes a bug with Firefox (???) */
-                $timeout(function() {
-                    audio.play();
-                }, 5);
+                
             });
 
             $element.on('$destroy', function() {
@@ -82,12 +84,17 @@ angular.module('ngAudio', [])
             $element.on('mouseover rollover hover', function() {
 
                 /* iOS workaround: Call the play method directly in listener function */
-                audio.audio.play();
-
-                audio.volume = $attrs.volumeHover || audio.volume;
-                audio.loop = $attrs.loop;
-                audio.currentTime = $attrs.startHover || 0;
-
+                /* Promise to be handled for latest browser specs */
+                    var playPromise = audio.audio.play();
+                    if(playPromise !== undefined) {
+                        playPromise.then(function() {
+                            audio.volume = $attrs.volumeHover || audio.volume;
+                            audio.loop = $attrs.loop;
+                            audio.currentTime = $attrs.startHover || 0;
+                        }).catch(function (error) {
+                        });
+                    }
+                    
             });
 
             $element.on('$destroy', function() {
@@ -175,12 +182,17 @@ angular.module('ngAudio', [])
 
 .factory('NgAudioObject', ['cleverAudioFindingService', '$rootScope', '$interval', '$timeout', 'ngAudioGlobals', function(cleverAudioFindingService, $rootScope, $interval, $timeout, ngAudioGlobals) {
     return function(id, scope) {
-
         function twiddle(){
             try{
-              audio.play();
-              audio.pause();
-            }catch(e){}
+                var playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(function () {
+                        audio.pause();
+                    }).catch(function (error) {
+                    });
+                }
+            }catch(e){
+            }
             window.removeEventListener("click",twiddle);
         }
 
