@@ -5,9 +5,9 @@
 NG-AUDIO
 ===
 
-The Angular Audio Module
+The AngularJs Audio Module
 
-Installation: `bower install angular-audio`
+Installation: `bower install angularjs-audio`
 
 Development Instructions
 ------
@@ -22,8 +22,8 @@ To deploy to `gh-pages`, call `gulp deploy`;
 
 Total awesomeness for playing sounds. Project page here:
 
-##[Angular Audio Project Page](http://danielstern.github.io/ngAudio/)
-##[Angular Audio Documentation](http://danielstern.github.io/ngAudio/#/docs)
+##[AngularJs Audio Project Page](http://danielstern.github.io/ngAudio/)
+##[AngularJs Audio Documentation](http://danielstern.github.io/ngAudio/#/docs)
 
 
 Release Notes v1.7.4
@@ -89,7 +89,7 @@ Release Notes v1.2
 
 Release Notes v1.0
 ---------
-- Not backwards compatible with previous version. please check out the [Angular Audio Docs](http://danielstern.github.io/ngAudio/#/docs) since this is pretty much completely different
+- Not backwards compatible with previous version. please check out the [AngularJs Audio Docs](http://danielstern.github.io/ngAudio/#/docs) since this is pretty much completely different
 - for previous version check out branch *v0.9*
 
 License

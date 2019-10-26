@@ -1,3 +1,3 @@
-require('./app/angular.audio.js');
+require('./app/angularjs.audio.js');
 
 module.exports = 'ngAudio';

@@ -1,13 +1,14 @@
 {
-  "name": "angular-audio",
+  "name": "angularjs-audio",
   "version": "0.0.2",
   "homepage": "https://github.com/danielstern/ngAudio",
   "description": "Directive for playing sounds",
-  "main": "angular.audio.js",
+  "main": "angularjs.audio.js",
   "keywords": [
     "audio",
     "sound",
     "angular",
+    "angularjs",
     "module",
     "directive"
   ],
